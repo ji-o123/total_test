@@ -1,0 +1,2848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Healthcare Repository</title>
+<style>
+  :root {
+    --primary: #1a3a8f;
+    --primary-dark: #0f2460;
+    --accent: #e63946;
+    --success: #2dc653;
+    --warning: #f4a261;
+    --bg: #dce8f5;
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #cbd5e1;
+    --sidebar-w: 240px;
+    --header-h: 64px;
+    --transition: 0.2s ease;
+    --shadow: 0 2px 12px rgba(0,0,0,0.10);
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===================== SCREENS ===================== */
+  .screen { display: none; }
+  .screen.active { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ===================== LOGIN ===================== */
+  #screen-login {
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #c8daef 0%, #dce8f5 60%, #b8cde8 100%);
+  }
+
+  .login-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 8px 40px rgba(26,58,143,0.18);
+    animation: fadeIn 0.4s ease;
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .logo-circle {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #e63946);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 4px 16px rgba(26,58,143,0.3);
+    margin-bottom: 8px;
+  }
+
+  .login-title {
+    color: var(--primary);
+    font-size: 1.3rem;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .login-subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-bottom: 20px;
+  }
+
+  .login-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    margin-bottom: 22px;
+    border-radius: 2px;
+  }
+
+  .form-row { display: flex; gap: 10px; margin-bottom: 14px; align-items: center; }
+  .form-row-full { margin-bottom: 14px; }
+
+  label.field-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  select.field, input.field {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: #f8fafc;
+    color: var(--text);
+    transition: border var(--transition), box-shadow var(--transition);
+    outline: none;
+  }
+
+  select.field:focus, input.field:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(26,58,143,0.12);
+    background: #fff;
+  }
+
+  .input-icon-wrap { position: relative; }
+  .input-icon-wrap .field { padding-left: 42px; }
+  .input-icon-wrap .icon {
+    position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+    font-size: 16px; color: var(--muted);
+  }
+  .input-icon-wrap .toggle-pw {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    cursor: pointer; font-size: 15px; color: var(--muted);
+    background: none; border: none; padding: 2px;
+  }
+
+  .check-row { display: flex; align-items: center; justify-content: space-between; margin: 4px 0 18px; }
+  .check-row label { display: flex; align-items: center; gap: 7px; font-size: 0.88rem; cursor: pointer; }
+  .check-row a { font-size: 0.82rem; color: var(--primary); text-decoration: underline; cursor: pointer; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--primary), #2453c0);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 14px rgba(26,58,143,0.3);
+    margin-bottom: 14px;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,58,143,0.4); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    padding: 9px 18px;
+    background: var(--card);
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background var(--transition), color var(--transition);
+  }
+  .btn-secondary:hover { background: var(--primary); color: #fff; }
+
+  .link-center { text-align: center; margin-bottom: 16px; }
+  .link-center a { color: var(--primary); text-decoration: underline; cursor: pointer; font-size: 0.93rem; font-weight: 600; }
+
+  .biometrics-row { display: flex; justify-content: center; gap: 24px; margin-top: 6px; }
+  .bio-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    cursor: pointer; background: #f0f5ff; border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 14px 22px; transition: all var(--transition);
+  }
+  .bio-btn:hover { border-color: var(--primary); background: #e8effe; }
+  .bio-btn span { font-size: 26px; }
+  .bio-btn p { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+
+  /* ===================== REGISTRATION ===================== */
+  #screen-register-resident, #screen-register-healthworker {
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #c8daef 0%, #dce8f5 60%, #b8cde8 100%);
+  }
+
+  .reg-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 32px 32px 24px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 8px 40px rgba(26,58,143,0.15);
+    animation: fadeIn 0.3s ease;
+  }
+
+  .reg-title {
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .reg-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    margin: 10px 0 22px;
+    border-radius: 2px;
+  }
+
+  .progress-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 22px; }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--border); transition: background 0.3s;
+  }
+  .dot.active { background: var(--primary); }
+  .dot.done { background: var(--success); }
+
+  .reg-step { display: none; }
+  .reg-step.active { display: block; }
+
+  .nav-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 20px; }
+  .page-label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+
+  .btn-nav {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1.5px solid var(--primary);
+    background: var(--card);
+    color: var(--primary);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all var(--transition);
+  }
+  .btn-nav.filled { background: var(--primary); color: #fff; }
+  .btn-nav:hover { background: var(--primary); color: #fff; }
+
+  .btn-signup {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--primary), #2453c0);
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 800;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 14px;
+    box-shadow: 0 4px 14px rgba(26,58,143,0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-signup:hover { transform: translateY(-1px); }
+
+  .id-upload-area {
+    display: flex; gap: 12px; margin-top: 10px;
+  }
+  .id-box {
+    flex: 1; height: 90px; border: 2px dashed var(--border);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 0.8rem; cursor: pointer;
+    transition: border-color var(--transition);
+  }
+  .id-box:hover { border-color: var(--primary); color: var(--primary); }
+
+  .face-scan-box {
+    width: 120px; height: 120px; border: 2px solid var(--primary);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 14px auto; font-size: 50px; background: #f0f5ff;
+  }
+
+  .fingerprint-box {
+    text-align: center; margin: 14px 0;
+    font-size: 50px; color: var(--primary);
+  }
+
+  /* ===================== APP SHELL ===================== */
+  .app-shell { display: flex; flex-direction: column; height: 100vh; }
+
+  .app-header {
+    height: var(--header-h);
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    display: flex; align-items: center; padding: 0 20px;
+    gap: 14px; flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    z-index: 100;
+  }
+
+  .header-logo { font-size: 22px; }
+  .header-title {
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex: 1;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .lang-btn {
+    background: rgba(255,255,255,0.15); color: #fff;
+    border: 1px solid rgba(255,255,255,0.3); border-radius: 6px;
+    padding: 5px 10px; font-size: 0.8rem; cursor: pointer;
+    transition: background var(--transition);
+  }
+  .lang-btn:hover { background: rgba(255,255,255,0.25); }
+  .user-badge {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .app-body { display: flex; flex: 1; overflow: hidden; }
+
+  /* ===================== SIDEBAR ===================== */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: linear-gradient(180deg, #0f2460 0%, #1a3a8f 100%);
+    display: flex; flex-direction: column;
+    padding: 16px 0; flex-shrink: 0;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 20px;
+    color: rgba(255,255,255,0.75);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all var(--transition);
+    border-left: 3px solid transparent;
+    user-select: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; border-left-color: rgba(255,255,255,0.4); }
+  .nav-item.active { background: rgba(255,255,255,0.18); color: #fff; border-left-color: #fff; }
+  .nav-item .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+  .nav-item.logout-item { margin-top: auto; color: #fca5a5; }
+  .nav-item.logout-item:hover { background: rgba(230,57,70,0.2); color: #fca5a5; }
+
+  /* ===================== CONTENT ===================== */
+  .content {
+    flex: 1; overflow-y: auto; padding: 28px;
+    background: var(--bg);
+  }
+
+  .view { display: none; animation: fadeIn 0.3s ease; }
+  .view.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===================== CARDS ===================== */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 16px;
+  }
+
+  /* ===================== TABLE ===================== */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: #f1f5fb;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .badge-green { background: #d1fae5; color: #065f46; }
+  .badge-yellow { background: #fef3c7; color: #92400e; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+
+  /* ===================== ANNOUNCEMENTS ===================== */
+  .announce-item {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.92rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .announce-item:last-child { border-bottom: none; }
+  .announce-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); flex-shrink: 0; }
+
+  /* ===================== PROFILE ===================== */
+  .profile-header {
+    display: flex; align-items: center; gap: 20px; margin-bottom: 20px;
+  }
+  .profile-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #c8daef, #a3bfdf);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; flex-shrink: 0;
+    border: 3px solid var(--primary);
+  }
+  .profile-name { font-size: 1.3rem; font-weight: 800; }
+  .profile-meta { font-size: 0.85rem; color: var(--muted); margin-top: 3px; }
+  .risk-tag {
+    display: inline-block; padding: 4px 12px;
+    border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+    background: #fee2e2; color: #991b1b; margin-top: 6px;
+  }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .info-item { }
+  .info-label { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); font-weight: 700; }
+  .info-value { font-size: 0.95rem; font-weight: 600; margin-top: 2px; }
+
+  /* ===================== APPOINTMENT ===================== */
+  .appt-form { display: flex; flex-direction: column; gap: 16px; }
+  .field-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.88rem; }
+  .field-group select, .field-group input {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 0.95rem; background: #f8fafc;
+    outline: none; transition: border var(--transition);
+  }
+  .field-group select:focus, .field-group input:focus {
+    border-color: var(--primary); background: #fff;
+  }
+
+  .calendar-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+    margin-top: 10px;
+  }
+  .cal-day {
+    text-align: center; padding: 8px 4px;
+    border-radius: 6px; font-size: 0.85rem; cursor: pointer;
+    transition: all var(--transition);
+  }
+  .cal-day:hover { background: #dbeafe; }
+  .cal-day.today { background: var(--primary); color: #fff; font-weight: 700; }
+  .cal-day.selected { background: #bfdbfe; font-weight: 700; }
+  .cal-day.empty { pointer-events: none; }
+  .cal-header { font-weight: 700; text-align: center; font-size: 0.78rem; color: var(--muted); padding: 4px; }
+
+  /* ===================== RISK ===================== */
+  .risk-banner {
+    padding: 22px; border-radius: 10px;
+    text-align: center; margin-bottom: 20px;
+  }
+  .risk-banner.high { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+  .risk-banner.medium { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+  .risk-banner.low { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+  .risk-banner .risk-icon { font-size: 40px; margin-bottom: 8px; }
+  .risk-banner .risk-label { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.06em; }
+  .risk-list { list-style: none; }
+  .risk-list li { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 0.93rem; }
+  .risk-list li:last-child { border-bottom: none; }
+  .risk-arrow { color: var(--accent); font-size: 12px; }
+  .reco-arrow { color: var(--success); font-size: 12px; }
+
+  /* ===================== PATIENTS (Health Worker only) ===================== */
+  .search-bar {
+    display: flex; gap: 10px; margin-bottom: 18px;
+  }
+  .search-bar input {
+    flex: 1; padding: 10px 14px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 0.92rem; outline: none;
+    transition: border var(--transition);
+  }
+  .search-bar input:focus { border-color: var(--primary); }
+  .search-bar button {
+    padding: 10px 18px; background: var(--primary); color: #fff;
+    border: none; border-radius: 8px; cursor: pointer; font-weight: 700;
+    transition: background var(--transition);
+  }
+  .search-bar button:hover { background: var(--primary-dark); }
+
+  .patient-row { cursor: pointer; }
+  .patient-row:hover td { background: #eff6ff; }
+
+  /* ===================== REPORT ===================== */
+  .stats-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .stat-card {
+    flex: 1; min-width: 140px;
+    background: var(--card); border-radius: 10px;
+    padding: 20px 18px; box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .stat-val { font-size: 2rem; font-weight: 900; color: var(--primary); }
+  .stat-lbl { font-size: 0.8rem; color: var(--muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; }
+
+  /* ===================== MODAL / OVERLAY ===================== */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    display: none; align-items: center; justify-content: center; z-index: 999;
+    animation: fadeIn 0.2s;
+  }
+  .overlay.active { display: flex; }
+  .modal {
+    background: var(--card); border-radius: 16px;
+    padding: 32px; width: 90%; max-width: 380px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: fadeIn 0.25s;
+  }
+  .modal-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 12px; }
+  .modal-title.danger { color: var(--accent); }
+  .modal-msg { font-size: 0.95rem; color: var(--text); margin-bottom: 22px; line-height: 1.5; }
+  .modal-btns { display: flex; gap: 12px; justify-content: flex-end; }
+  .btn-danger {
+    padding: 9px 22px; background: var(--accent); color: #fff;
+    border: none; border-radius: 8px; cursor: pointer; font-weight: 700;
+    transition: background var(--transition);
+  }
+  .btn-danger:hover { background: #c1121f; }
+  .btn-cancel {
+    padding: 9px 22px; background: #f1f5f9; color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
+    font-weight: 600;
+  }
+
+  /* ===================== TOAST ===================== */
+  #toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #1e293b; color: #fff; padding: 12px 24px;
+    border-radius: 30px; font-size: 0.9rem; font-weight: 600;
+    opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 9999;
+    max-width: 90vw; text-align: center; word-break: break-word;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ===================== LOADING ===================== */
+  .loading-screen {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 9998;
+  }
+  .spinner {
+    width: 60px; height: 60px; border: 5px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===================== LANG MODAL ===================== */
+  .lang-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px; border-radius: 8px; cursor: pointer;
+    transition: background var(--transition);
+  }
+  .lang-option:hover { background: #f0f5ff; }
+  .lang-radio { width: 16px; height: 16px; accent-color: var(--primary); }
+
+  /* ===================== FORGOT PW MODAL ===================== */
+  .forgot-info { font-size: 0.88rem; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+
+  /* ===================== CONFIRM BOOKING ===================== */
+  .confirm-card {
+    background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 10px;
+    padding: 16px; margin-top: 12px;
+  }
+  .confirm-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.9rem; }
+  .confirm-row strong { color: var(--primary); }
+
+  /* ===================== HELP TOOLTIP ===================== */
+  .tooltip-wrap { position: relative; display: inline-block; }
+  .tooltip-wrap:hover .tooltip-box { display: block; }
+  .tooltip-box {
+    display: none; position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+    background: #1e293b; color: #fff; padding: 6px 12px;
+    border-radius: 6px; font-size: 0.78rem; white-space: nowrap; z-index: 100;
+  }
+
+  /* ===================== APPOINTMENT APPROVAL ===================== */
+  .appt-filter-btn {
+    padding: 7px 16px; border-radius: 20px;
+    border: 1.5px solid var(--border); background: var(--card);
+    color: var(--muted); font-weight: 700; font-size: 0.82rem;
+    cursor: pointer; transition: all var(--transition);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .appt-filter-btn.active, .appt-filter-btn:hover { border-color: var(--primary); color: var(--primary); background: #eef2ff; }
+  .appt-count { background: var(--primary); color: #fff; border-radius: 20px; padding: 1px 8px; font-size: 0.75rem; }
+  .appt-count.approved { background: var(--success); }
+  .appt-count.rescheduled { background: var(--warning); color:#333; }
+  .appt-count.rejected { background: var(--accent); }
+  .action-btn {
+    padding: 5px 12px; border-radius: 6px; font-size: 0.8rem;
+    font-weight: 700; cursor: pointer; border: none; transition: opacity 0.15s;
+  }
+  .action-btn:hover { opacity: 0.8; }
+  .action-btn.review { background: #dbeafe; color: #1e40af; }
+
+  /* ===================== VALIDATION ===================== */
+  .error-msg { font-size: 0.78rem; color: #ef4444; margin-top: 4px; }
+
+  /* ===================== PATIENT CARD LIST ===================== */
+  .patient-card-list { display: flex; flex-direction: column; }
+  .patient-card-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 4px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .patient-card-item:last-child { border-bottom: none; }
+  .patient-card-item:hover { background: #f0f5ff; border-radius: 8px; }
+  .patient-card-avatar { font-size: 1.8rem; flex-shrink: 0; width: 40px; text-align: center; }
+  .patient-card-info { flex: 1; min-width: 0; }
+  .patient-card-name { font-weight: 700; font-size: 0.92rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .patient-card-sub  { font-size: 0.76rem; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .patient-card-arrow { font-size: 1.3rem; color: var(--muted); flex-shrink: 0; margin-left: 4px; }
+
+  /* ===================== RECENT RECORDS LIST ===================== */
+  .record-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+  }
+  .record-item:last-child { border-bottom: none; }
+  .record-left { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  .record-diagnosis { font-size: 0.95rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .record-date { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+  .record-empty { text-align: center; color: var(--muted); padding: 20px 0; font-size: 0.9rem; }
+
+  /* ===================== RESPONSIVE — MOBILE FIRST ===================== */
+
+  /* Toast: don't overflow on narrow screens */
+  #toast {
+    max-width: 90vw;
+    white-space: normal;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  /* Login / Register cards: full bleed on small phones */
+  @media (max-width: 480px) {
+    #screen-login,
+    #screen-register-resident,
+    #screen-register-healthworker {
+      padding: 0;
+      align-items: stretch;
+      justify-content: flex-start;
+      overflow-y: auto;
+    }
+
+    .login-card {
+      border-radius: 0;
+      padding: 32px 20px 28px;
+      max-width: 100%;
+      box-shadow: none;
+      min-height: 100vh;
+    }
+
+    .reg-card {
+      border-radius: 0;
+      padding: 28px 18px 24px;
+      max-width: 100%;
+      box-shadow: none;
+      min-height: 100vh;
+    }
+
+    /* Biometric buttons: stack or shrink on very small screens */
+    .biometrics-row { gap: 12px; }
+    .bio-btn { padding: 12px 16px; }
+    .bio-btn span { font-size: 22px; }
+
+    /* Form rows: stack vertically */
+    .form-row { flex-direction: column; align-items: stretch; gap: 0; }
+    .form-row > div { width: 100%; margin-bottom: 14px; }
+    .form-row > div:last-child { margin-bottom: 0; }
+
+    /* Modal: full width on small screen */
+    .modal { width: 96%; padding: 24px 18px; border-radius: 12px; }
+    .modal-btns { flex-wrap: wrap; gap: 8px; }
+    .modal-btns button { flex: 1; min-width: 100px; }
+
+    /* Walk-in modal form rows */
+    #walkin-modal .modal div[style*="display:flex"] {
+      flex-direction: column !important;
+      gap: 0 !important;
+    }
+
+    /* Appointment filter buttons: wrap and shrink */
+    .appt-filter-btn { font-size: 0.75rem; padding: 6px 10px; }
+
+    /* Confirm booking row: stack instead of space-between */
+    .confirm-row { flex-direction: column; gap: 2px; }
+  }
+
+  /* App shell: collapse sidebar to bottom nav on mobile */
+  @media (max-width: 700px) {
+
+    /* Make app shell full height and scrollable body */
+    .app-shell {
+      flex-direction: column;
+      height: 100dvh;
+    }
+
+    /* Header: shrink and wrap long titles */
+    .app-header { padding: 0 12px; gap: 8px; }
+    .header-title { font-size: 0.72rem; letter-spacing: 0.02em; }
+    .user-badge { font-size: 0.72rem; padding: 4px 8px; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lang-btn { font-size: 0.72rem; padding: 4px 8px; }
+
+    /* Body: stack sidebar below content (becomes bottom nav) */
+    .app-body {
+      flex-direction: column-reverse;
+      overflow: hidden;
+    }
+
+    /* Sidebar becomes a horizontal bottom nav bar */
+    .sidebar {
+      width: 100%;
+      flex-direction: row;
+      padding: 0;
+      overflow-x: auto;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .nav-item {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 10px 14px;
+      font-size: 0.62rem;
+      letter-spacing: 0;
+      border-left: none;
+      border-top: 3px solid transparent;
+      flex-shrink: 0;
+      min-width: 64px;
+    }
+    .nav-item:hover  { border-left-color: transparent; border-top-color: rgba(255,255,255,0.4); }
+    .nav-item.active { border-left-color: transparent; border-top-color: #fff; }
+    .nav-item span:not(.nav-icon) { display: block; font-size: 0.6rem; white-space: nowrap; }
+    .nav-item .nav-icon { font-size: 20px; width: auto; }
+    .nav-item.logout-item { margin-top: 0; margin-left: auto; }
+
+    /* Content: scrollable, full width */
+    .content { padding: 16px 14px; overflow-y: auto; flex: 1; }
+
+    /* Cards: tighter padding */
+    .card { padding: 16px 14px; }
+
+    /* Tables: horizontally scrollable */
+    .card > table,
+    .card > div > table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+    }
+    td, th { padding: 9px 10px; font-size: 0.82rem; }
+
+    /* Info grid: single column */
+    .info-grid { grid-template-columns: 1fr; }
+
+    /* Stats row: 2-column grid instead of flex */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .stat-card { min-width: unset; }
+    .stat-val { font-size: 1.6rem; }
+
+    /* Greeting: smaller */
+    .greeting { font-size: 1.2rem; }
+
+    /* Profile header: stack avatar and info */
+    .profile-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .profile-avatar { width: 66px; height: 66px; font-size: 28px; }
+    .profile-name { font-size: 1.1rem; }
+
+    /* Risk banner: smaller text */
+    .risk-banner .risk-label { font-size: 1.15rem; }
+    .risk-banner .risk-icon { font-size: 30px; }
+
+    /* Appointment filter buttons: wrap neatly */
+    .appt-filter-btn { font-size: 0.75rem; padding: 6px 10px; gap: 4px; }
+
+    /* Patient detail risk section: stack vertically */
+    #pd-risk-section { flex-direction: column; }
+
+    /* Action buttons inside HW appointment card: wrap */
+    .modal-btns { flex-wrap: wrap; gap: 8px; }
+    .modal-btns button { flex: 1 1 calc(50% - 4px); min-width: 100px; }
+
+    /* Walk-in modal: stack form rows */
+    #walkin-modal .modal > div[style*="display:flex"],
+    #walkin-modal .modal > form > div[style*="display:flex"] {
+      flex-direction: column !important;
+      gap: 0 !important;
+    }
+
+    /* Bio picker modal */
+    #bio-picker-modal .modal { padding: 22px 16px; }
+
+    /* Appointment form buttons: full width */
+    .appt-form .btn-primary { margin-top: 4px; }
+
+    /* Search bar: stack */
+    .search-bar { flex-direction: column; }
+    .search-bar input, .search-bar button { width: 100%; }
+
+    /* Walk-in records table */
+    #walkin-card table { font-size: 0.8rem; }
+
+    /* Confirm booking summary */
+    .confirm-row { flex-direction: column; gap: 2px; }
+    .confirm-card { padding: 12px; }
+  }
+
+  /* Medium screens: keep sidebar visible but narrower */
+  @media (min-width: 701px) and (max-width: 900px) {
+    .sidebar { width: 64px; }
+    .nav-item span:not(.nav-icon) { display: none; }
+    .nav-item { padding: 14px 0; justify-content: center; }
+    .content { padding: 20px; }
+    .header-title { font-size: 0.88rem; }
+    .stats-row { flex-wrap: wrap; }
+    .stat-card { min-width: 120px; }
+  }
+
+  .greeting { font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; }
+  .greeting-sub { font-size: 0.88rem; color: var(--muted); margin-bottom: 22px; }
+
+  .hw-patient-detail { animation: fadeIn 0.3s ease; }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: none; cursor: pointer; color: var(--primary);
+    font-weight: 700; font-size: 0.9rem; margin-bottom: 16px; padding: 0;
+  }
+  .back-btn:hover { text-decoration: underline; }
+
+  .bio-picker-btn {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; padding: 13px 16px;
+    background: #f0f5ff; border: 2px solid var(--border);
+    border-radius: 12px; cursor: pointer; text-align: left;
+    transition: all 0.18s ease; font-family: inherit;
+  }
+  .bio-picker-btn:hover { background: #dbeafe; border-color: var(--primary); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(26,58,143,0.13); }
+  .bio-picker-avatar { font-size: 2rem; line-height: 1; }
+  .bio-picker-info { display: flex; flex-direction: column; gap: 2px; }
+  .bio-picker-info strong { font-size: 0.95rem; color: var(--text); }
+  .bio-picker-info small { font-size: 0.78rem; color: var(--muted); }
+
+  .doh-badge { font-size: 20px; }
+</style>
+</head>
+<body>
+
+<!-- ===== LOADING ===== -->
+<div class="loading-screen" id="loading-screen">
+  <div style="font-size:28px;margin-bottom:16px;">🏥</div>
+  <div class="spinner"></div>
+  <p style="margin-top:18px;color:var(--muted);font-size:0.9rem;font-weight:600;">Loading System…</p>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div id="toast"></div>
+
+<!-- ===== BIO PICKER MODAL ===== -->
+<div class="overlay" id="bio-picker-modal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-title" style="color:var(--primary);">👆 Select Your Account</div>
+    <p style="font-size:0.84rem;color:var(--muted);margin-bottom:18px;">
+      Multiple accounts matched your <strong id="bio-picker-method"></strong>. Choose which account to log in as:
+    </p>
+    <div id="bio-picker-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <div style="margin-top:16px;text-align:right;">
+      <button class="btn-cancel" onclick="document.getElementById('bio-picker-modal').classList.remove('active')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LOGOUT MODAL ===== -->
+<div class="overlay" id="logout-modal">
+  <div class="modal">
+    <div class="modal-title danger">⚠ LOG OUT</div>
+    <div class="modal-msg">Are you sure you want to log out of the Community Healthcare Repository?</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('logout-modal')">Cancel</button>
+      <button class="btn-danger" onclick="confirmLogout()">Log Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FORGOT PASSWORD MODAL ===== -->
+<div class="overlay" id="forgot-modal">
+  <div class="modal">
+    <div class="modal-title">🔐 Forgot Password</div>
+    <p class="forgot-info">Enter your registered email or phone number. We will send a reset link or OTP to help you recover your account.</p>
+    <div class="form-row-full">
+      <input class="field" id="forgot-input" type="text" placeholder="Email / Phone Number">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('forgot-modal')">Cancel</button>
+      <button class="btn-primary" style="width:auto;padding:9px 22px;margin:0;" onclick="sendReset()">Send Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LANGUAGE MODAL ===== -->
+<div class="overlay" id="lang-modal">
+  <div class="modal">
+    <div class="modal-title">🌐 Select Language</div>
+    <div id="lang-options">
+      <div class="lang-option" onclick="setLang('English',this)"><input type="radio" class="lang-radio" name="lang" value="English" checked> English</div>
+      <div class="lang-option" onclick="setLang('Tagalog',this)"><input type="radio" class="lang-radio" name="lang" value="Tagalog"> Tagalog</div>
+      <div class="lang-option" onclick="setLang('Cebuano',this)"><input type="radio" class="lang-radio" name="lang" value="Cebuano"> Cebuano</div>
+      <div class="lang-option" onclick="setLang('Ilocano',this)"><input type="radio" class="lang-radio" name="lang" value="Ilocano"> Ilocano</div>
+    </div>
+    <div style="margin-top:16px;text-align:right;">
+      <button class="btn-primary" style="width:auto;padding:9px 22px;margin:0;" onclick="applyLang()">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APPOINTMENT ACTION MODAL ===== -->
+<div class="overlay" id="appt-action-modal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-title" id="appt-modal-title">📋 Appointment Request</div>
+    <div class="confirm-card" id="appt-modal-summary" style="margin-bottom:16px;"></div>
+    <div style="margin-bottom:12px;">
+      <label class="field-label">Note to Patient <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+      <textarea id="appt-note" class="field" rows="2" placeholder="e.g. Please bring your latest lab results." style="resize:vertical;font-family:inherit;"></textarea>
+    </div>
+    <div class="modal-btns" style="margin-top:8px;flex-wrap:wrap;gap:8px;">
+      <button class="btn-cancel" onclick="closeModal('appt-action-modal')">Cancel</button>
+      <button class="btn-secondary" style="color:#b45309;border-color:#b45309;" onclick="openRescheduleModal()">🔄 Suggest New Time</button>
+      <button class="btn-secondary" style="color:#991b1b;border-color:#991b1b;" onclick="handleApptAction('rejected')">❌ Reject</button>
+      <button class="btn-primary" style="width:auto;padding:9px 18px;margin:0;" onclick="handleApptAction('approved')">✅ Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESCHEDULE MODAL ===== -->
+<div class="overlay" id="appt-reschedule-modal">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-title">🔄 Suggest New Time</div>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:14px;">Propose an alternative schedule for <strong id="reschedule-patient-name"></strong>.</p>
+    <div class="form-row-full">
+      <label class="field-label">New Date <span style="color:red">*</span></label>
+      <input class="field" id="reschedule-date" type="date" aria-label="New appointment date">
+      <div class="error-msg" id="reschedule-date-err" style="display:none;">Please select a date.</div>
+    </div>
+    <div class="form-row-full">
+      <label class="field-label">New Time <span style="color:red">*</span></label>
+      <select class="field" id="reschedule-time" aria-label="New appointment time">
+        <option value="08:00 AM">08:00 AM</option>
+        <option value="08:30 AM">08:30 AM</option>
+        <option value="09:00 AM">09:00 AM</option>
+        <option value="09:30 AM">09:30 AM</option>
+        <option value="10:00 AM">10:00 AM</option>
+        <option value="10:30 AM">10:30 AM</option>
+        <option value="11:00 AM">11:00 AM</option>
+        <option value="11:30 AM">11:30 AM</option>
+        <option value="01:00 PM">01:00 PM</option>
+        <option value="01:30 PM">01:30 PM</option>
+        <option value="02:00 PM">02:00 PM</option>
+        <option value="02:30 PM">02:30 PM</option>
+        <option value="03:00 PM">03:00 PM</option>
+        <option value="03:30 PM">03:30 PM</option>
+        <option value="04:00 PM">04:00 PM</option>
+      </select>
+    </div>
+    <div class="form-row-full">
+      <label class="field-label">Reason for Rescheduling</label>
+      <textarea id="reschedule-reason" class="field" rows="2" placeholder="e.g. Slot unavailable, please come on this date instead." style="resize:vertical;font-family:inherit;"></textarea>
+    </div>
+    <div class="modal-btns" style="margin-top:14px;">
+      <button class="btn-cancel" onclick="closeModal('appt-reschedule-modal');openModal('appt-action-modal')">Back</button>
+      <button class="btn-primary" style="width:auto;padding:9px 22px;margin:0;" onclick="handleApptAction('rescheduled')">Send to Patient</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BOOKING CONFIRM MODAL ===== -->
+<div class="overlay" id="book-confirm-modal">
+  <div class="modal">
+    <div class="modal-title">📅 Confirm Appointment</div>
+    <div class="confirm-card" id="book-summary"></div>
+    <div class="modal-btns" style="margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('book-confirm-modal')">Edit</button>
+      <button class="btn-primary" style="width:auto;padding:9px 22px;margin:0;" onclick="confirmBooking()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: LOGIN ===== -->
+<div class="screen" id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-circle">🏥</div>
+    </div>
+    <div class="login-title">Community Healthcare Repository</div>
+    <div class="login-subtitle">eBarangay — Department of Health</div>
+    <div class="login-divider"></div>
+
+    <div class="form-row" style="align-items:flex-end;gap:10px;margin-bottom:14px;">
+      <div style="flex:1;">
+        <label class="field-label">Account Type</label>
+        <select class="field" id="login-type" onchange="toggleAccountType()">
+          <option value="resident">Resident</option>
+          <option value="healthworker">Health Worker</option>
+        </select>
+      </div>
+      <div>
+        <button class="lang-btn" onclick="openModal('lang-modal')" style="background:#f0f5ff;color:var(--primary);border-color:var(--primary);">🌐 Language</button>
+      </div>
+    </div>
+
+    <div class="form-row-full">
+      <label class="field-label">Email / Phone Number</label>
+      <div class="input-icon-wrap">
+        <span class="icon">👤</span>
+        <input class="field" id="login-email" type="text" placeholder="Email / Phone Number" aria-label="Email or Phone Number">
+        <div class="error-msg" id="email-err" style="display:none;">Please enter your email or phone.</div>
+      </div>
+    </div>
+    <div class="form-row-full">
+      <label class="field-label">Password</label>
+      <div class="input-icon-wrap">
+        <span class="icon">🔒</span>
+        <input class="field" id="login-pw" type="password" placeholder="Password" aria-label="Password" onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="toggle-pw" onclick="togglePw('login-pw', this)" title="Show/hide password" aria-label="Toggle password visibility">👁</button>
+      </div>
+      <div class="error-msg" id="pw-err" style="display:none;">Please enter your password.</div>
+    </div>
+
+    <div class="check-row">
+      <label><input type="checkbox" id="remember-me"> Remember me</label>
+      <a onclick="openModal('forgot-modal')" title="Click to reset your password">Forgot Password? Click Here</a>
+    </div>
+
+    <button class="btn-primary" onclick="doLogin()">Login</button>
+    <div class="link-center">
+      <a onclick="goToRegister()">Register New Account</a>
+    </div>
+    <div class="biometrics-row">
+      <div class="bio-btn" onclick="bioLogin('Fingerprint')" title="Login with Fingerprint" role="button" tabindex="0" aria-label="Fingerprint Login">
+        <span>👆</span><p>Fingerprint</p>
+      </div>
+      <div class="bio-btn" onclick="bioLogin('Face Scan')" title="Login with Face Scan" role="button" tabindex="0" aria-label="Face Scan Login">
+        <span>🤳</span><p>Face Scan</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: REGISTER RESIDENT ===== -->
+<div class="screen" id="screen-register-resident">
+  <div class="reg-card">
+    <div class="login-logo">
+      <div class="logo-circle" style="width:60px;height:60px;font-size:22px;">🏥</div>
+    </div>
+    <div class="reg-title">Registration</div>
+    <div style="text-align:center;margin-bottom:6px;">
+      <span style="background:#dbeafe;color:#1e40af;font-size:0.75rem;font-weight:700;padding:3px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:0.06em;">👤 Resident Account</span>
+    </div>
+    <div class="reg-divider"></div>
+
+    <div class="progress-dots">
+      <div class="dot active" id="rdot-1"></div>
+      <div class="dot" id="rdot-2"></div>
+      <div class="dot" id="rdot-3"></div>
+    </div>
+
+    <!-- Resident Step 1: Personal Info -->
+    <div class="reg-step active" id="r-step-1">
+      <div class="form-row-full">
+        <label class="field-label">Full Name <span style="color:red">*</span></label>
+        <input class="field" id="r-name" type="text" placeholder="Juan dela Cruz" aria-label="Full Name">
+        <div class="error-msg" id="r-name-err" style="display:none;">Full name is required.</div>
+      </div>
+      <div class="form-row">
+        <div style="flex:1;">
+          <label class="field-label">Age <span style="color:red">*</span></label>
+          <select class="field" id="r-age" aria-label="Age">
+            <option value="">Select</option>
+            <script>for(let i=1;i<=120;i++)document.write(`<option>${i}</option>`)</script>
+          </select>
+        </div>
+        <div style="flex:1;">
+          <label class="field-label">Sex <span style="color:red">*</span></label>
+          <select class="field" id="r-sex" aria-label="Sex">
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Date of Birth <span style="color:red">*</span></label>
+        <input class="field" id="r-dob" type="date" aria-label="Date of Birth">
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Address <span style="color:red">*</span></label>
+        <input class="field" id="r-address" type="text" placeholder="House No., Street, Barangay" aria-label="Address">
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Contact Number <span style="color:red">*</span></label>
+        <input class="field" id="r-contact" type="tel" placeholder="09XXXXXXXXX" aria-label="Contact Number">
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">PhilHealth ID <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+        <input class="field" id="r-philhealth" type="text" placeholder="12-XXXXXXXXX-X" aria-label="PhilHealth ID">
+      </div>
+      <div class="nav-row">
+        <button class="btn-nav" onclick="goToLogin()">Return</button>
+        <span class="page-label">PAGE 1-3</span>
+        <button class="btn-nav filled" onclick="rNextStep(1)">Next</button>
+      </div>
+    </div>
+
+    <!-- Resident Step 2: Account Credentials -->
+    <div class="reg-step" id="r-step-2">
+      <div class="form-row-full">
+        <label class="field-label">Email Address <span style="color:red">*</span></label>
+        <input class="field" id="r-email" type="email" placeholder="you@email.com" aria-label="Email address">
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Set Password <span style="color:red">*</span></label>
+        <div class="input-icon-wrap">
+          <input class="field" id="r-pw" type="password" placeholder="Min. 8 characters" aria-label="Password">
+          <button class="toggle-pw" onclick="togglePw('r-pw', this)" aria-label="Toggle password">👁</button>
+        </div>
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Confirm Password <span style="color:red">*</span></label>
+        <div class="input-icon-wrap">
+          <input class="field" id="r-pw2" type="password" placeholder="Re-enter password" aria-label="Confirm Password">
+          <button class="toggle-pw" onclick="togglePw('r-pw2', this)" aria-label="Toggle password">👁</button>
+        </div>
+        <div class="error-msg" id="r-pw2-err" style="display:none;">Passwords do not match.</div>
+      </div>
+      <div id="r-fp-box" class="fingerprint-box" title="Tap to scan fingerprint" style="cursor:pointer;transition:all 0.3s;" onclick="scanFingerprint('r')">👆</div>
+      <p style="text-align:center;font-size:0.82rem;color:var(--muted);">Tap the fingerprint to verify. <span style="color:red">*</span></p>
+      <div class="error-msg" id="r-fp-err" style="display:none;text-align:center;">Fingerprint verification is required.</div>
+      <div class="nav-row">
+        <button class="btn-nav" onclick="rPrevStep(2)">Previous</button>
+        <span class="page-label">PAGE 2-3</span>
+        <button class="btn-nav filled" onclick="rNextStep(2)">Next</button>
+      </div>
+    </div>
+
+    <!-- Resident Step 3: Valid ID + Face Scan -->
+    <div class="reg-step" id="r-step-3">
+      <div class="form-row-full">
+        <label class="field-label">Select Valid ID <span style="color:red">*</span></label>
+        <select class="field" id="r-id-type" aria-label="ID Type">
+          <option>National ID</option>
+          <option>Driver's License</option>
+          <option>Passport</option>
+          <option>PhilHealth ID</option>
+          <option>Voter's ID</option>
+          <option>Postal ID</option>
+          <option>Senior Citizen ID</option>
+          <option>PWD ID</option>
+        </select>
+      </div>
+      <p style="font-size:0.82rem;color:var(--muted);margin:6px 0 4px;">Please take a picture of your ID Front and Back. <span style="color:red">*</span></p>
+      <div class="id-upload-area">
+        <div class="id-box" onclick="showToast('ID Front uploaded ✓')">📷 Front</div>
+        <div class="id-box" onclick="showToast('ID Back uploaded ✓')">📷 Back</div>
+      </div>
+      <div style="margin-top:16px;">
+        <label class="field-label">Face Scan <span style="color:red">*</span></label>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;">Remove eyeglasses if you wear one.</p>
+        <div id="r-face-box" class="face-scan-box" onclick="scanFace('r')" title="Tap to start face scan" style="cursor:pointer;transition:all 0.3s;">🤳</div>
+        <div class="error-msg" id="r-face-err" style="display:none;text-align:center;margin-top:6px;">Face scan is required.</div>
+      </div>
+      <button class="btn-signup" onclick="doRegister('resident')">Sign Up</button>
+      <div class="nav-row" style="margin-top:0;">
+        <button class="btn-nav" onclick="rPrevStep(3)">Previous</button>
+        <span class="page-label">PAGE 3-3</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: REGISTER HEALTH WORKER ===== -->
+<div class="screen" id="screen-register-healthworker">
+  <div class="reg-card" style="max-width:500px;">
+    <div class="login-logo">
+      <div class="logo-circle" style="width:60px;height:60px;font-size:22px;">🏥</div>
+    </div>
+    <div class="reg-title">Registration</div>
+    <div style="text-align:center;margin-bottom:6px;">
+      <span style="background:#dcfce7;color:#166534;font-size:0.75rem;font-weight:700;padding:3px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:0.06em;">🩺 Health Worker Account</span>
+    </div>
+    <div class="reg-divider"></div>
+
+    <div class="progress-dots">
+      <div class="dot active" id="hdot-1"></div>
+      <div class="dot" id="hdot-2"></div>
+      <div class="dot" id="hdot-3"></div>
+    </div>
+
+    <!-- HW Step 1: Professional Info -->
+    <div class="reg-step active" id="h-step-1">
+      <div class="form-row-full">
+        <label class="field-label">Full Name <span style="color:red">*</span></label>
+        <input class="field" id="h-name" type="text" placeholder="e.g. Juan dela Cruz" aria-label="Full Name">
+        <div class="error-msg" id="h-name-err" style="display:none;">Full name is required.</div>
+      </div>
+      <div class="form-row">
+        <div style="flex:1;">
+          <label class="field-label">Age <span style="color:red">*</span></label>
+          <select class="field" id="h-age" aria-label="Age">
+            <option value="">Select</option>
+            <script>for(let i=18;i<=65;i++)document.write(`<option>${i}</option>`)</script>
+          </select>
+        </div>
+        <div style="flex:1;">
+          <label class="field-label">Sex <span style="color:red">*</span></label>
+          <select class="field" id="h-sex" aria-label="Sex">
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Position / Role <span style="color:red">*</span></label>
+        <select class="field" id="h-role" aria-label="Position">
+          <option value="">Select Position</option>
+          <option>Barangay Health Worker (BHW)</option>
+          <option>Nurse</option>
+          <option>Midwife</option>
+          <option>Rural Health Physician</option>
+          <option>Nutritionist</option>
+          <option>Sanitary Inspector</option>
+        </select>
+        <div class="error-msg" id="h-role-err" style="display:none;">Please select your position.</div>
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Assigned Barangay <span style="color:red">*</span></label>
+        <input class="field" id="h-barangay" type="text" placeholder="e.g. Barangay San Jose" aria-label="Assigned Barangay">
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Contact Number <span style="color:red">*</span></label>
+        <input class="field" id="h-contact" type="tel" placeholder="09XXXXXXXXX" aria-label="Contact Number">
+      </div>
+      <div class="nav-row">
+        <button class="btn-nav" onclick="goToLogin()">Return</button>
+        <span class="page-label">PAGE 1-3</span>
+        <button class="btn-nav filled" onclick="hNextStep(1)">Next</button>
+      </div>
+    </div>
+
+    <!-- HW Step 2: Account Credentials -->
+    <div class="reg-step" id="h-step-2">
+      <div class="form-row-full">
+        <label class="field-label">Official Email Address <span style="color:red">*</span></label>
+        <input class="field" id="h-email" type="email" placeholder="you@rhu.gov.ph" aria-label="Email address">
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Use your official government or RHU email if available.</p>
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Set Password <span style="color:red">*</span></label>
+        <div class="input-icon-wrap">
+          <input class="field" id="h-pw" type="password" placeholder="Min. 8 characters" aria-label="Password">
+          <button class="toggle-pw" onclick="togglePw('h-pw', this)" aria-label="Toggle password">👁</button>
+        </div>
+      </div>
+      <div class="form-row-full">
+        <label class="field-label">Confirm Password <span style="color:red">*</span></label>
+        <div class="input-icon-wrap">
+          <input class="field" id="h-pw2" type="password" placeholder="Re-enter password" aria-label="Confirm Password">
+          <button class="toggle-pw" onclick="togglePw('h-pw2', this)" aria-label="Toggle password">👁</button>
+        </div>
+        <div class="error-msg" id="h-pw2-err" style="display:none;">Passwords do not match.</div>
+      </div>
+      <div id="h-fp-box" class="fingerprint-box" title="Tap to scan fingerprint" style="cursor:pointer;transition:all 0.3s;" onclick="scanFingerprint('h')">👆</div>
+      <p style="text-align:center;font-size:0.82rem;color:var(--muted);">Tap the fingerprint to verify. <span style="color:red">*</span></p>
+      <div class="error-msg" id="h-fp-err" style="display:none;text-align:center;">Fingerprint verification is required.</div>
+      <div class="nav-row">
+        <button class="btn-nav" onclick="hPrevStep(2)">Previous</button>
+        <span class="page-label">PAGE 2-3</span>
+        <button class="btn-nav filled" onclick="hNextStep(2)">Next</button>
+      </div>
+    </div>
+
+    <!-- HW Step 3: PRC License Verification -->
+    <div class="reg-step" id="h-step-3">
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:12px 14px;margin-bottom:16px;">
+        <p style="font-size:0.82rem;color:#166534;font-weight:600;">🏥 Health Worker ID Verification</p>
+        <p style="font-size:0.78rem;color:#166534;margin-top:4px;">Health worker accounts require a valid PRC (Professional Regulation Commission) license for verification and approval.</p>
+      </div>
+
+      <div style="background:#f8fafc;border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;">
+        <label class="field-label" style="margin-bottom:8px;">PRC License <span style="color:red">*</span></label>
+        <div class="form-row-full" style="margin-bottom:10px;">
+          <label class="field-label">PRC License Number <span style="color:red">*</span></label>
+          <input class="field" id="h-prc-num" type="text" placeholder="e.g. 0123456" aria-label="PRC License Number">
+          <div class="error-msg" id="h-prc-err" style="display:none;">PRC License number is required.</div>
+        </div>
+        <div class="form-row-full" style="margin-bottom:10px;">
+          <label class="field-label">License Expiry Date <span style="color:red">*</span></label>
+          <input class="field" id="h-prc-expiry" type="date" aria-label="PRC License Expiry">
+        </div>
+        <p style="font-size:0.78rem;color:var(--muted);margin:6px 0 6px;">Upload a clear photo of your PRC ID (Front and Back). <span style="color:red">*</span></p>
+        <div class="id-upload-area">
+          <div class="id-box" onclick="showToast('PRC ID Front uploaded ✓')" style="border-color:#86efac;">📋 PRC Front</div>
+          <div class="id-box" onclick="showToast('PRC ID Back uploaded ✓')" style="border-color:#86efac;">📋 PRC Back</div>
+        </div>
+      </div>
+
+      <div style="margin-top:6px;">
+        <label class="field-label">Face Scan <span style="color:red">*</span></label>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;">Remove eyeglasses if you wear one.</p>
+        <div id="h-face-box" class="face-scan-box" onclick="scanFace('h')" title="Tap to start face scan" style="cursor:pointer;transition:all 0.3s;">🤳</div>
+        <div class="error-msg" id="h-face-err" style="display:none;text-align:center;margin-top:6px;">Face scan is required.</div>
+      </div>
+
+      <div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px;margin:10px 0;font-size:0.78rem;color:#713f12;">
+        ⏳ Your account will be reviewed by the RHU admin. You will be notified once approved.
+      </div>
+
+      <button class="btn-signup" onclick="doRegister('healthworker')" style="background:linear-gradient(135deg,#166534,#15803d);">Submit for Approval</button>
+      <div class="nav-row" style="margin-top:0;">
+        <button class="btn-nav" onclick="hPrevStep(3)">Previous</button>
+        <span class="page-label">PAGE 3-3</span>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: RESIDENT APP ===== -->
+<div class="screen" id="screen-resident">
+  <div class="app-shell">
+    <header class="app-header">
+      <span class="header-logo">🏥</span>
+      <span class="header-title">Community Healthcare Repository</span>
+      <div class="header-right">
+        <button class="lang-btn" onclick="openModal('lang-modal')">🌐 Language</button>
+        <span class="user-badge" id="resident-badge">Resident</span>
+        <span class="doh-badge">🏛️</span>
+      </div>
+    </header>
+    <div class="app-body">
+      <nav class="sidebar">
+        <div class="nav-item active" onclick="showView('resident', 'dashboard')" id="res-nav-dashboard" title="Dashboard">
+          <span class="nav-icon">🏠</span><span>Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="showView('resident', 'profile')" id="res-nav-profile" title="My Profile">
+          <span class="nav-icon">❤️</span><span>My Profile</span>
+        </div>
+        <div class="nav-item" onclick="showView('resident', 'appointments')" id="res-nav-appointments" title="Appointments">
+          <span class="nav-icon">📅</span><span>Appointments</span>
+        </div>
+        <div class="nav-item" onclick="showView('resident', 'risk')" id="res-nav-risk" title="Risk Predictions">
+          <span class="nav-icon">📋</span><span>Risk Predictions</span>
+        </div>
+        <div class="nav-item logout-item" onclick="openModal('logout-modal')" title="Logout">
+          <span class="nav-icon">🚪</span><span>Logout</span>
+        </div>
+      </nav>
+      <main class="content">
+
+        <!-- RESIDENT DASHBOARD -->
+        <div class="view active" id="res-view-dashboard">
+          <div class="greeting" id="res-greeting">Hello, Resident Maria 👋</div>
+          <div class="greeting-sub" id="res-date">Sunday, April 12, 2026</div>
+          <div class="card">
+            <div class="card-title">📋 Recent Records</div>
+            <div id="recent-records-list">
+              <div class="record-item">
+                <div class="record-left">
+                  <div class="record-diagnosis">Cough and Cold</div>
+                  <div class="record-date">📅 07 May 2025</div>
+                </div>
+                <span class="badge badge-green">Treated</span>
+              </div>
+              <div class="record-item">
+                <div class="record-left">
+                  <div class="record-diagnosis">Headache</div>
+                  <div class="record-date">📅 07 May 2025</div>
+                </div>
+                <span class="badge badge-green">Treated</span>
+              </div>
+              <div class="record-item" style="border-bottom:none;">
+                <div class="record-left">
+                  <div class="record-diagnosis">Fever</div>
+                  <div class="record-date">📅 14 May 2025</div>
+                </div>
+                <span class="badge badge-yellow">On Schedule</span>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:14px;">
+              <button class="btn-secondary" onclick="showView('resident','profile')">View All Records</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📢 Announcements</div>
+            <div class="announce-item"><div class="announce-dot"></div>Annual Barangay Festival | June 21</div>
+            <div class="announce-item"><div class="announce-dot"></div>Mother's Nutrition Class | July 9</div>
+            <div class="announce-item"><div class="announce-dot"></div>Anti-Rabies Injection | July 25</div>
+            <div class="announce-item"><div class="announce-dot"></div>Clinic Renovation | August 5</div>
+          </div>
+        </div>
+
+        <!-- RESIDENT PROFILE — only sees OWN data -->
+        <div class="view" id="res-view-profile">
+          <div class="card">
+            <div class="card-title">MY PROFILE</div>
+            <div class="profile-header">
+              <div class="profile-avatar" id="profile-avatar">👩</div>
+              <div>
+                <div class="profile-name" id="profile-name">Maria Santos</div>
+                <div class="profile-meta" id="profile-meta">Age: 30 &nbsp;|&nbsp; Sex: Female</div>
+                <div class="risk-tag" id="profile-risk-tag">⚠ Screening for Hypertension</div>
+              </div>
+            </div>
+            <div class="card-title" style="font-size:1rem;">Personal Info</div>
+            <div class="info-grid">
+              <div class="info-item"><div class="info-label">Birthday</div><div class="info-value" id="prof-birthday">June 17, 1995</div></div>
+              <div class="info-item"><div class="info-label">Blood Type</div><div class="info-value" id="prof-bloodtype">O+</div></div>
+              <div class="info-item"><div class="info-label">BMI</div><div class="info-value" id="prof-bmi">25.03</div></div>
+              <div class="info-item"><div class="info-label">Blood Pressure</div><div class="info-value" id="prof-bp">130/80 mmHg</div></div>
+              <div class="info-item"><div class="info-label">Blood Sugar</div><div class="info-value" id="prof-bs">98 mg/dL</div></div>
+              <div class="info-item"><div class="info-label">PhilHealth ID</div><div class="info-value" id="prof-philhealth">12-982XXXXX-XX</div></div>
+              <div class="info-item" style="grid-column:1/-1;"><div class="info-label">Emergency Contact</div><div class="info-value" id="prof-emergency">Juan Santos (Husband) — 09XXXXXXXXX</div></div>
+            </div>
+            <div class="card-title" style="font-size:1rem;margin-top:18px;">Medical History</div>
+            <div class="info-grid">
+              <div class="info-item"><div class="info-label">Allergies</div><div class="info-value" id="prof-allergies">None</div></div>
+              <div class="info-item"><div class="info-label">Past Illnesses</div><div class="info-value" id="prof-illnesses">Pneumonia (2022)</div></div>
+              <div class="info-item" style="grid-column:1/-1;"><div class="info-label">Current Medication</div><div class="info-value" id="prof-medication">Losartan 50g (Daily)</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESIDENT APPOINTMENTS -->
+        <div class="view" id="res-view-appointments">
+          <div class="card">
+            <div class="card-title">📅 Book Appointment</div>
+            <div class="appt-form">
+              <div class="field-group">
+                <label>Select Date</label>
+                <div id="res-calendar"></div>
+              </div>
+              <div class="field-group">
+                <label>Select Time</label>
+                <select id="appt-time" aria-label="Appointment Time">
+                  <option>09:00 AM</option><option>09:30 AM</option>
+                  <option>10:00 AM</option><option>10:30 AM</option>
+                  <option>11:00 AM</option><option>02:00 PM</option>
+                  <option>02:30 PM</option><option>03:00 PM</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>Purpose</label>
+                <select id="appt-purpose" aria-label="Appointment Purpose">
+                  <option>General Checkup</option>
+                  <option>Follow-up</option>
+                  <option>Vaccination</option>
+                  <option>Blood Pressure Check</option>
+                  <option>Prenatal</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <button class="btn-primary" onclick="openBookConfirm()">Confirm Booking</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Upcoming Appointments</div>
+            <table>
+              <thead><tr><th>Date</th><th>Time</th><th>Purpose</th><th>Status</th></tr></thead>
+              <tbody id="appt-list">
+                <tr><td>Feb 23, 2026</td><td>09:00 AM</td><td>General Checkup</td><td><span class="badge badge-blue">Scheduled</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RESIDENT RISK -->
+        <div class="view" id="res-view-risk">
+          <div class="card">
+            <div class="card-title">📋 Risk Prediction</div>
+            <div class="risk-banner high">
+              <div class="risk-icon">⚠️</div>
+              <div class="risk-label">HIGH RISK</div>
+            </div>
+            <div class="card-title" style="font-size:1rem;">At Risk Of:</div>
+            <ul class="risk-list">
+              <li><span class="risk-arrow">▶</span> Heart disease</li>
+              <li><span class="risk-arrow">▶</span> High blood pressure</li>
+              <li><span class="risk-arrow">▶</span> Stroke</li>
+            </ul>
+            <div class="card-title" style="font-size:1rem;margin-top:16px;">Recommendations:</div>
+            <ul class="risk-list">
+              <li><span class="reco-arrow">▶</span> Lifestyle Changes</li>
+              <li><span class="reco-arrow">▶</span> Consult RHU</li>
+              <li><span class="reco-arrow">▶</span> Regular Monitoring</li>
+            </ul>
+            <div style="margin-top:16px;font-size:0.8rem;color:var(--muted);background:#fef9c3;padding:10px;border-radius:8px;">
+              ℹ️ This prediction is based on your health profile and is <strong>not a diagnosis</strong>. Please consult your health worker.
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN: HEALTH WORKER APP ===== -->
+<div class="screen" id="screen-healthworker">
+  <div class="app-shell">
+    <header class="app-header">
+      <span class="header-logo">🏥</span>
+      <span class="header-title">Community Healthcare Repository</span>
+      <div class="header-right">
+        <button class="lang-btn" onclick="openModal('lang-modal')">🌐 Language</button>
+        <span class="user-badge">Health Worker</span>
+        <span class="doh-badge">🏛️</span>
+      </div>
+    </header>
+    <div class="app-body">
+      <nav class="sidebar">
+        <div class="nav-item active" onclick="showView('hw','dashboard')" id="hw-nav-dashboard" title="Dashboard">
+          <span class="nav-icon">🏠</span><span>Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="showView('hw','patients')" id="hw-nav-patients" title="Patients">
+          <span class="nav-icon">❤️</span><span>Patients</span>
+        </div>
+        <div class="nav-item" onclick="showView('hw','appointments')" id="hw-nav-appointments" title="Appointments">
+          <span class="nav-icon">📅</span><span>Appointments</span>
+        </div>
+        <div class="nav-item" onclick="showView('hw','report')" id="hw-nav-report" title="Report">
+          <span class="nav-icon">📊</span><span>Report</span>
+        </div>
+        <div class="nav-item logout-item" onclick="openModal('logout-modal')" title="Logout">
+          <span class="nav-icon">🚪</span><span>Logout</span>
+        </div>
+      </nav>
+      <main class="content">
+
+        <!-- HW DASHBOARD -->
+        <div class="view active" id="hw-view-dashboard">
+          <div class="greeting" id="hw-greeting">Hello, Health Worker 👋</div>
+          <div class="greeting-sub" id="hw-date">Sunday, April 12, 2026</div>
+          <div class="card">
+            <div class="card-title">🔴 Recent Patients</div>
+            <div class="patient-card-list">
+              <div class="patient-card-item" onclick="openPatientDetail('Maria Santos',30,'F','High Blood','Treated','25.03','130/80 mmHg','98 mg/dL','O+','Pneumonia (2022)','Losartan 50g')">
+                <div class="patient-card-avatar">👩</div>
+                <div class="patient-card-info">
+                  <div class="patient-card-name">Maria Santos</div>
+                  <div class="patient-card-sub">Age 30 · High Blood</div>
+                </div>
+                <span class="badge badge-green">Treated</span>
+                <span class="patient-card-arrow">›</span>
+              </div>
+              <div class="patient-card-item" onclick="openPatientDetail('Juan Dela Cruz',55,'M','Diabetes','On Follow-up','27.1','140/90 mmHg','180 mg/dL','B+','Hypertension (2020)','Metformin 500mg')">
+                <div class="patient-card-avatar">👨</div>
+                <div class="patient-card-info">
+                  <div class="patient-card-name">Juan Dela Cruz</div>
+                  <div class="patient-card-sub">Age 55 · Diabetes</div>
+                </div>
+                <span class="badge badge-yellow">On Follow-up</span>
+                <span class="patient-card-arrow">›</span>
+              </div>
+              <div class="patient-card-item" onclick="openPatientDetail('Anna Reyes',42,'F','Fever','Treated','22.5','120/80 mmHg','95 mg/dL','A+','None','Paracetamol')">
+                <div class="patient-card-avatar">👩</div>
+                <div class="patient-card-info">
+                  <div class="patient-card-name">Anna Reyes</div>
+                  <div class="patient-card-sub">Age 42 · Fever</div>
+                </div>
+                <span class="badge badge-green">Treated</span>
+                <span class="patient-card-arrow">›</span>
+              </div>
+              <div class="patient-card-item" onclick="openPatientDetail('Pedro Lim',67,'M','Hypertension','High Risk','29.0','160/100 mmHg','110 mg/dL','AB+','Stroke (2019)','Amlodipine 5mg')">
+                <div class="patient-card-avatar">👨</div>
+                <div class="patient-card-info">
+                  <div class="patient-card-name">Pedro Lim</div>
+                  <div class="patient-card-sub">Age 67 · Hypertension</div>
+                </div>
+                <span class="badge badge-red">High Risk</span>
+                <span class="patient-card-arrow">›</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📢 Due for Follow-up</div>
+            <div class="patient-card-list">
+              <div class="patient-card-item" style="cursor:default;">
+                <div class="patient-card-avatar">👨</div>
+                <div class="patient-card-info">
+                  <div class="patient-card-name">Juan Dela Cruz</div>
+                  <div class="patient-card-sub">Last visit: Apr 1, 2026 · Diabetes</div>
+                </div>
+                <button class="btn-secondary" style="font-size:0.75rem;padding:6px 10px;white-space:nowrap;" onclick="showToast('Reminder sent to Juan Dela Cruz ✓')">Send Reminder</button>
+              </div>
+              <div class="patient-card-item" style="cursor:default;border-bottom:none;">
+                <div class="patient-card-avatar">👨</div>
+                <div class="patient-card-info">
+                  <div class="patient-card-name">Pedro Lim</div>
+                  <div class="patient-card-sub">Last visit: Mar 15, 2026 · Hypertension</div>
+                </div>
+                <button class="btn-secondary" style="font-size:0.75rem;padding:6px 10px;white-space:nowrap;" onclick="showToast('Reminder sent to Pedro Lim ✓')">Send Reminder</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HW PATIENTS -->
+        <div class="view" id="hw-view-patients">
+          <div id="patients-list-view">
+            <div class="card">
+              <div class="card-title">👥 Patient Records</div>
+              <div class="search-bar">
+                <input type="text" id="patient-search" placeholder="Search by name or diagnosis…" oninput="filterPatients()" aria-label="Search patients">
+                <button onclick="filterPatients()">Search</button>
+              </div>
+              <div class="patient-card-list" id="patients-tbody">
+                <div class="patient-card-item" onclick="openPatientDetail('Maria Santos',30,'F','High Blood','Treated','25.03','130/80 mmHg','98 mg/dL','O+','Pneumonia (2022)','Losartan 50g')">
+                  <div class="patient-card-avatar">👩</div>
+                  <div class="patient-card-info">
+                    <div class="patient-card-name">Maria Santos</div>
+                    <div class="patient-card-sub">Age 30 · F · High Blood</div>
+                  </div>
+                  <span class="badge badge-green">Treated</span>
+                  <span class="patient-card-arrow">›</span>
+                </div>
+                <div class="patient-card-item" onclick="openPatientDetail('Juan Dela Cruz',55,'M','Diabetes','On Follow-up','27.1','140/90 mmHg','180 mg/dL','B+','Hypertension (2020)','Metformin 500mg')">
+                  <div class="patient-card-avatar">👨</div>
+                  <div class="patient-card-info">
+                    <div class="patient-card-name">Juan Dela Cruz</div>
+                    <div class="patient-card-sub">Age 55 · M · Diabetes</div>
+                  </div>
+                  <span class="badge badge-yellow">On Follow-up</span>
+                  <span class="patient-card-arrow">›</span>
+                </div>
+                <div class="patient-card-item" onclick="openPatientDetail('Anna Reyes',42,'F','Fever','Treated','22.5','120/80 mmHg','95 mg/dL','A+','None','Paracetamol')">
+                  <div class="patient-card-avatar">👩</div>
+                  <div class="patient-card-info">
+                    <div class="patient-card-name">Anna Reyes</div>
+                    <div class="patient-card-sub">Age 42 · F · Fever</div>
+                  </div>
+                  <span class="badge badge-green">Treated</span>
+                  <span class="patient-card-arrow">›</span>
+                </div>
+                <div class="patient-card-item" onclick="openPatientDetail('Pedro Lim',67,'M','Hypertension','High Risk','29.0','160/100 mmHg','110 mg/dL','AB+','Stroke (2019)','Amlodipine 5mg')">
+                  <div class="patient-card-avatar">👨</div>
+                  <div class="patient-card-info">
+                    <div class="patient-card-name">Pedro Lim</div>
+                    <div class="patient-card-sub">Age 67 · M · Hypertension</div>
+                  </div>
+                  <span class="badge badge-red">High Risk</span>
+                  <span class="patient-card-arrow">›</span>
+                </div>
+                <div class="patient-card-item" style="border-bottom:none;" onclick="openPatientDetail('Target Dela Cruz',28,'F','Prenatal','On Schedule','21.0','110/70 mmHg','88 mg/dL','O-','None','Ferrous Sulfate')">
+                  <div class="patient-card-avatar">👩</div>
+                  <div class="patient-card-info">
+                    <div class="patient-card-name">Target Dela Cruz</div>
+                    <div class="patient-card-sub">Age 28 · F · Prenatal</div>
+                  </div>
+                  <span class="badge badge-blue">On Schedule</span>
+                  <span class="patient-card-arrow">›</span>
+                </div>
+              </div>
+              <div style="margin-top:12px;font-size:0.8rem;color:var(--muted);">Page 1 of 285 records</div>
+            </div>
+          </div>
+          <!-- Patient Detail -->
+          <div id="patient-detail-view" style="display:none;" class="hw-patient-detail">
+            <button class="back-btn" onclick="closePatientDetail()">← Back to Patient List</button>
+            <div class="card">
+              <div class="card-title">Patient Record</div>
+              <div class="profile-header">
+                <div class="profile-avatar" id="pd-avatar">👤</div>
+                <div>
+                  <div class="profile-name" id="pd-name">—</div>
+                  <div class="profile-meta" id="pd-meta">—</div>
+                  <div class="risk-tag" id="pd-risk"></div>
+                </div>
+              </div>
+              <div class="card-title" style="font-size:1rem;">Personal Info</div>
+              <div class="info-grid">
+                <div class="info-item"><div class="info-label">Blood Type</div><div class="info-value" id="pd-bt">—</div></div>
+                <div class="info-item"><div class="info-label">BMI</div><div class="info-value" id="pd-bmi">—</div></div>
+                <div class="info-item"><div class="info-label">Blood Pressure</div><div class="info-value" id="pd-bp">—</div></div>
+                <div class="info-item"><div class="info-label">Blood Sugar</div><div class="info-value" id="pd-bs">—</div></div>
+              </div>
+              <div class="card-title" style="font-size:1rem;margin-top:16px;">Medical History</div>
+              <div class="info-grid">
+                <div class="info-item"><div class="info-label">Past Illnesses</div><div class="info-value" id="pd-hist">—</div></div>
+                <div class="info-item"><div class="info-label">Medication</div><div class="info-value" id="pd-med">—</div></div>
+              </div>
+
+              <!-- Risk Prediction Section -->
+              <div class="card-title" style="font-size:1rem;margin-top:20px;">⚠️ Risk Prediction</div>
+              <div id="pd-risk-section" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;">
+                <div id="pd-risk-banner" style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:10px;font-weight:800;font-size:1rem;min-width:160px;">
+                </div>
+                <div style="flex:1;min-width:200px;">
+                  <div style="font-weight:700;font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">At Risk Of:</div>
+                  <ul id="pd-risk-list" class="risk-list" style="padding-left:4px;"></ul>
+                </div>
+              </div>
+              <div id="pd-risk-note" style="margin-top:10px;font-size:0.78rem;color:var(--muted);background:#fef9c3;padding:8px 12px;border-radius:8px;display:none;">
+                ℹ️ This prediction is based on the patient's health profile and is <strong>not a diagnosis</strong>.
+              </div>
+
+              <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn-primary" style="width:auto;padding:10px 20px;" onclick="showToast('Appointment booked ✓')">📅 Book Appointment</button>
+                <button class="btn-secondary" onclick="showToast('SMS reminder sent ✓')">📲 Send SMS Reminder</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<!-- ===== WALK-IN MODAL ===== -->
+<div class="overlay" id="walkin-modal">
+  <div class="modal" style="max-width:460px;width:95%;">
+    <div class="modal-title" style="color:var(--primary);">🚶 Add Walk-in / Add Record</div>
+    <p style="font-size:0.84rem;color:var(--muted);margin-bottom:16px;">Record a patient who visited the clinic without a prior reservation.</p>
+
+    <div style="display:flex;gap:10px;margin-bottom:12px;">
+      <div style="flex:2;">
+        <label class="field-label">Patient Name <span style="color:red">*</span></label>
+        <input class="field" id="wi-name" type="text" placeholder="Full name" aria-label="Patient name">
+        <div class="error-msg" id="wi-name-err" style="display:none;">Name is required.</div>
+      </div>
+      <div style="flex:1;">
+        <label class="field-label">Age <span style="color:red">*</span></label>
+        <input class="field" id="wi-age" type="number" min="1" max="120" placeholder="e.g. 35" aria-label="Age">
+        <div class="error-msg" id="wi-age-err" style="display:none;">Age is required.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-bottom:12px;">
+      <div style="flex:1;">
+        <label class="field-label">Sex <span style="color:red">*</span></label>
+        <select class="field" id="wi-sex" aria-label="Sex">
+          <option value="">Select</option>
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+        </select>
+        <div class="error-msg" id="wi-sex-err" style="display:none;">Sex is required.</div>
+      </div>
+      <div style="flex:2;">
+        <label class="field-label">Time of Visit <span style="color:red">*</span></label>
+        <select class="field" id="wi-time" aria-label="Time of visit">
+          <option value="08:00 AM">08:00 AM</option>
+          <option value="08:30 AM">08:30 AM</option>
+          <option value="09:00 AM" selected>09:00 AM</option>
+          <option value="09:30 AM">09:30 AM</option>
+          <option value="10:00 AM">10:00 AM</option>
+          <option value="10:30 AM">10:30 AM</option>
+          <option value="11:00 AM">11:00 AM</option>
+          <option value="11:30 AM">11:30 AM</option>
+          <option value="01:00 PM">01:00 PM</option>
+          <option value="01:30 PM">01:30 PM</option>
+          <option value="02:00 PM">02:00 PM</option>
+          <option value="02:30 PM">02:30 PM</option>
+          <option value="03:00 PM">03:00 PM</option>
+          <option value="03:30 PM">03:30 PM</option>
+          <option value="04:00 PM">04:00 PM</option>
+          <option value="04:30 PM">04:30 PM</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label class="field-label">Purpose / Chief Complaint <span style="color:red">*</span></label>
+      <select class="field" id="wi-purpose" aria-label="Purpose">
+        <option value="">Select purpose</option>
+        <option>General Checkup</option>
+        <option>Fever</option>
+        <option>Cough and Cold</option>
+        <option>Headache</option>
+        <option>Blood Pressure Check</option>
+        <option>Blood Sugar Check</option>
+        <option>Wound Dressing</option>
+        <option>Vaccination</option>
+        <option>Prenatal</option>
+        <option>Follow-up</option>
+        <option>Lab Result Review</option>
+        <option>Other</option>
+      </select>
+      <div class="error-msg" id="wi-purpose-err" style="display:none;">Purpose is required.</div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label class="field-label">Additional Notes <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+      <textarea class="field" id="wi-notes" rows="2" placeholder="e.g. Patient arrived with mild fever, temp 38.1°C" style="resize:vertical;font-family:inherit;"></textarea>
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('walkin-modal')">Cancel</button>
+      <button class="btn-primary" style="width:auto;padding:10px 24px;margin:0;" onclick="submitWalkin()">✅ Save Record</button>
+    </div>
+  </div>
+</div>
+
+        <!-- HW APPOINTMENTS (APPROVAL) -->
+        <div class="view" id="hw-view-appointments">
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+              <div class="card-title" style="margin-bottom:0;">📅 Appointment Requests</div>
+              <button class="btn-primary" style="width:auto;padding:9px 18px;margin:0;font-size:0.88rem;display:flex;align-items:center;gap:6px;" onclick="openModal('walkin-modal')">
+                ➕ Add Walk-in / Record
+              </button>
+            </div>
+            <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+              <button class="appt-filter-btn active" onclick="filterApptTab('pending',this)">⏳ Pending <span class="appt-count" id="count-pending">3</span></button>
+              <button class="appt-filter-btn" onclick="filterApptTab('approved',this)">✅ Approved <span class="appt-count approved" id="count-approved">2</span></button>
+              <button class="appt-filter-btn" onclick="filterApptTab('rescheduled',this)">🔄 Rescheduled <span class="appt-count rescheduled" id="count-rescheduled">1</span></button>
+              <button class="appt-filter-btn" onclick="filterApptTab('rejected',this)">❌ Rejected <span class="appt-count rejected" id="count-rejected">1</span></button>
+            </div>
+            <table id="appt-requests-table">
+              <thead>
+                <tr><th>Patient</th><th>Requested Date</th><th>Time</th><th>Purpose</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="appt-requests-tbody"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-title">🗓️ Today's Schedule</div>
+            <div style="font-weight:700;margin-bottom:10px;" id="hw-cal-month">April 2026</div>
+            <div id="hw-calendar"></div>
+            <div style="margin-top:20px;">
+              <div class="card-title" style="font-size:1rem;">Confirmed Appointments</div>
+              <table>
+                <thead><tr><th>Time</th><th>Patient</th><th>Purpose</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td>09:00 AM</td><td>Maria Santos</td><td>Checkup</td><td><span class="badge badge-green">Done</span></td></tr>
+                  <tr><td>10:00 AM</td><td>Juan Dela Cruz</td><td>Follow-up</td><td><span class="badge badge-yellow">Pending</span></td></tr>
+                  <tr><td>11:00 AM</td><td>Anna Reyes</td><td>Vaccination</td><td><span class="badge badge-blue">Scheduled</span></td></tr>
+                  <tr><td>02:00 PM</td><td>Pedro Lim</td><td>BP Monitoring</td><td><span class="badge badge-blue">Scheduled</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Walk-in Records Card -->
+          <div class="card" id="walkin-card" style="display:none;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+              <div class="card-title" style="margin-bottom:0;">🚶 Walk-in / Unscheduled Records</div>
+              <span id="walkin-count-badge" style="background:#dbeafe;color:#1e40af;font-size:0.78rem;font-weight:700;padding:3px 12px;border-radius:20px;"></span>
+            </div>
+            <table>
+              <thead>
+                <tr><th>Time</th><th>Patient</th><th>Age</th><th>Sex</th><th>Purpose</th><th>Notes</th><th>Type</th></tr>
+              </thead>
+              <tbody id="walkin-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- HW REPORT -->
+        <div class="view" id="hw-view-report">
+          <div class="card">
+            <div class="card-title">📊 Community Health Report</div>
+            <div class="stats-row">
+              <div class="stat-card"><div class="stat-val">1,425</div><div class="stat-lbl">Total Patients</div></div>
+              <div class="stat-card"><div class="stat-val">48</div><div class="stat-lbl">New Records<br>(This Month)</div></div>
+              <div class="stat-card"><div class="stat-val">12</div><div class="stat-lbl">High Risk</div></div>
+              <div class="stat-card"><div class="stat-val">87%</div><div class="stat-lbl">Follow-up Rate</div></div>
+            </div>
+            <div class="card-title" style="font-size:1rem;">Top Diagnoses This Month</div>
+            <table>
+              <thead><tr><th>Diagnosis</th><th>Cases</th><th>% of Total</th></tr></thead>
+              <tbody>
+                <tr><td>Hypertension</td><td>18</td><td>37.5%</td></tr>
+                <tr><td>Diabetes</td><td>12</td><td>25%</td></tr>
+                <tr><td>Fever</td><td>8</td><td>16.7%</td></tr>
+                <tr><td>Cough & Cold</td><td>6</td><td>12.5%</td></tr>
+                <tr><td>Prenatal</td><td>4</td><td>8.3%</td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:16px;text-align:right;">
+              <button class="btn-primary" style="width:auto;padding:10px 22px;" onclick="showToast('Report exported ✓')">📤 Submit to DOH</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===================== STATE =====================
+  let currentUser = null; // { type, name, isNew }
+  let selectedApptDate = null;
+  let currentRegStep = 1;
+
+  // Demo credentials
+  const DEMO = {
+    resident: { email: 'maria@email.com', pw: 'resident123', name: 'Maria Santos' },
+    healthworker: { email: 'nurse@bhrs.gov', pw: 'health123', name: 'Nurse Demo' }
+  };
+
+  // In-memory user store (persists until page refresh)
+  const registeredUsers = [];
+
+  // ===================== INIT =====================
+  window.onload = () => {
+    window._currentResidentName = 'Maria Santos';
+    setTimeout(() => {
+      document.getElementById('loading-screen').style.display = 'none';
+      showScreen('login');
+      buildCalendar('res-calendar', true);
+      buildCalendar('hw-calendar', false);
+      setDateLabels();
+      renderApptTable('pending');
+      updateApptCounts();
+    }, 1800);
+  };
+
+  function setDateLabels() {
+    const d = new Date();
+    const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+    const label = d.toLocaleDateString('en-US', opts);
+    const el1 = document.getElementById('res-date');
+    const el2 = document.getElementById('hw-date');
+    if(el1) el1.textContent = label;
+    if(el2) el2.textContent = label;
+  }
+
+  // ===================== SCREEN NAV =====================
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + id).classList.add('active');
+  }
+
+  function goToLogin() { showScreen('login'); }
+  function goToRegister() {
+    const type = document.getElementById('login-type').value;
+    if (type === 'healthworker') {
+      showScreen('register-healthworker');
+      resetHWReg();
+    } else {
+      showScreen('register-resident');
+      resetResidentReg();
+    }
+  }
+
+  // ===================== LOGIN =====================
+  function toggleAccountType() {
+    // Routes to different registration forms
+  }
+
+  function doLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pw = document.getElementById('login-pw').value;
+    const type = document.getElementById('login-type').value;
+
+    // Validation feedback (Rule 1: Strive for consistency; Rule 8: Error prevention)
+    let valid = true;
+    const eErr = document.getElementById('email-err');
+    const pErr = document.getElementById('pw-err');
+    eErr.style.display = 'none';
+    pErr.style.display = 'none';
+    document.getElementById('login-email').classList.remove('field-error');
+    document.getElementById('login-pw').classList.remove('field-error');
+
+    if (!email) { eErr.style.display = 'block'; document.getElementById('login-email').classList.add('field-error'); valid = false; }
+    if (!pw) { pErr.style.display = 'block'; document.getElementById('login-pw').classList.add('field-error'); valid = false; }
+    if (!valid) return;
+
+    // Check demo accounts first, then registered users
+    const cred = DEMO[type];
+    let matchedUser = null;
+    if (email === cred.email && pw === cred.pw) {
+      matchedUser = { name: cred.name, type: type, isNew: false };
+    } else {
+      const found = registeredUsers.find(u => u.email === email && u.pw === pw && u.type === type);
+      if (found) matchedUser = found;
+    }
+    if (matchedUser) {
+      currentUser = { type: matchedUser.type, name: matchedUser.name, isNew: matchedUser.isNew || false };
+      applyUserToUI(currentUser);
+      showToast('Login successful! Welcome, ' + matchedUser.name + ' 👋');
+      document.getElementById('loading-screen').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+        showScreen(matchedUser.type === 'resident' ? 'resident' : 'healthworker');
+      }, 1000);
+    } else {
+      showToast('❌ Invalid credentials. Try: ' + (type==='resident'?'maria@email.com / resident123':'nurse@bhrs.gov / health123'));
+      document.getElementById('login-email').classList.add('field-error');
+      document.getElementById('login-pw').classList.add('field-error');
+    }
+  }
+
+  function bioLogin(method) {
+    const type = document.getElementById('login-type').value;
+    const bioKey = method === 'Fingerprint' ? 'bioFP' : 'bioFace';
+
+    // For residents: only registered accounts can use biometrics (not the demo resident)
+    // For health workers: demo account can still use biometrics
+    if (type === 'resident') {
+      const regMatches = registeredUsers.filter(u => u.type === 'resident' && u[bioKey]);
+      if (regMatches.length === 0) {
+        showToast('❌ No registered resident account found for ' + method + '. Please log in with email & password.');
+        return;
+      } else if (regMatches.length === 1) {
+        _executeBioLogin(regMatches[0], method);
+      } else {
+        _showBioPicker(regMatches, method);
+      }
+    } else {
+      // Health worker — demo + registered accounts both allowed
+      const demoUser   = { ...DEMO.healthworker, type: 'healthworker', isNew: false, [bioKey]: true };
+      const regMatches = registeredUsers.filter(u => u.type === 'healthworker' && u[bioKey]);
+      const allMatches = [demoUser, ...regMatches];
+      if (allMatches.length === 1) {
+        _executeBioLogin(allMatches[0], method);
+      } else {
+        _showBioPicker(allMatches, method);
+      }
+    }
+  }
+
+  function _executeBioLogin(user, method) {
+    showToast(method + ' verified! Logging in as ' + user.name + '…');
+    setTimeout(() => {
+      document.getElementById('loading-screen').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+        currentUser = { type: user.type, name: user.name, isNew: user.isNew || false };
+        applyUserToUI(currentUser);
+        showScreen(user.type === 'healthworker' ? 'healthworker' : 'resident');
+      }, 900);
+    }, 600);
+  }
+
+  function _showBioPicker(accounts, method) {
+    const modal = document.getElementById('bio-picker-modal');
+    const list  = document.getElementById('bio-picker-list');
+    document.getElementById('bio-picker-method').textContent = method;
+
+    list.innerHTML = accounts.map((u, i) =>
+      `<button class="bio-picker-btn" onclick="_pickBioAccount(${i}, '${method}')">
+        <span class="bio-picker-avatar">${u.type === 'healthworker' ? '👩‍⚕️' : (u.sex === 'Female' ? '👩' : '👤')}</span>
+        <span class="bio-picker-info">
+          <strong>${u.name}</strong>
+          <small>${u.type === 'healthworker' ? (u.role || 'Health Worker') : 'Resident'}</small>
+        </span>
+      </button>`
+    ).join('');
+
+    // Store accounts list on window temporarily
+    window._bioPickerAccounts = accounts;
+    modal.classList.add('active');
+  }
+
+  function _pickBioAccount(index, method) {
+    const user = window._bioPickerAccounts[index];
+    document.getElementById('bio-picker-modal').classList.remove('active');
+    _executeBioLogin(user, method);
+  }
+
+  function togglePw(id, btn) {
+    const f = document.getElementById(id);
+    if (f.type === 'password') { f.type = 'text'; btn.textContent = '🙈'; }
+    else { f.type = 'password'; btn.textContent = '👁'; }
+  }
+
+  // ===================== BIOMETRIC SCAN FUNCTIONS =====================
+  const biometricState = { r_fp: false, h_fp: false, r_face: false, h_face: false };
+
+  function scanFingerprint(prefix) {
+    const box = document.getElementById(prefix + '-fp-box');
+    const err = document.getElementById(prefix + '-fp-err');
+    box.textContent = '⏳';
+    box.style.opacity = '0.6';
+    box.style.pointerEvents = 'none';
+    setTimeout(() => {
+      biometricState[prefix + '_fp'] = true;
+      box.textContent = '✅';
+      box.style.opacity = '1';
+      box.style.color = '#16a34a';
+      box.style.borderColor = '#16a34a';
+      box.style.background = '#dcfce7';
+      if (err) err.style.display = 'none';
+      showToast('Fingerprint captured successfully ✓');
+    }, 1500);
+  }
+
+  function scanFace(prefix) {
+    const box = document.getElementById(prefix + '-face-box');
+    const err = document.getElementById(prefix + '-face-err');
+    box.textContent = '⏳';
+    box.style.opacity = '0.6';
+    box.style.pointerEvents = 'none';
+    setTimeout(() => {
+      biometricState[prefix + '_face'] = true;
+      box.textContent = '✅';
+      box.style.opacity = '1';
+      box.style.background = '#dcfce7';
+      box.style.borderColor = '#16a34a';
+      if (err) err.style.display = 'none';
+      showToast('Face scan captured successfully ✓');
+    }, 1800);
+  }
+
+  // ===================== RESIDENT REGISTRATION =====================
+  function rNextStep(step) {
+    if (step === 1) {
+      const name = document.getElementById('r-name').value.trim();
+      const err = document.getElementById('r-name-err');
+      if (!name) { err.style.display = 'block'; document.getElementById('r-name').classList.add('field-error'); return; }
+      err.style.display = 'none'; document.getElementById('r-name').classList.remove('field-error');
+    }
+    if (step === 2) {
+      const email = document.getElementById('r-email').value.trim();
+      const pw = document.getElementById('r-pw').value;
+      const pw2 = document.getElementById('r-pw2').value;
+      const pwErr = document.getElementById('r-pw2-err');
+      const fpErr = document.getElementById('r-fp-err');
+      let ok = true;
+      // Check duplicate email
+      const allEmails = [DEMO.resident.email, DEMO.healthworker.email, ...registeredUsers.map(u => u.email)];
+      if (!email) { pwErr.textContent = 'Email is required.'; pwErr.style.display = 'block'; ok = false; }
+      else if (allEmails.includes(email)) { pwErr.textContent = 'This email is already registered.'; pwErr.style.display = 'block'; ok = false; }
+      else if (!pw || pw.length < 8) { pwErr.textContent = 'Password must be at least 8 characters.'; pwErr.style.display = 'block'; ok = false; }
+      else if (pw !== pw2) { pwErr.textContent = 'Passwords do not match.'; pwErr.style.display = 'block'; ok = false; }
+      else { pwErr.style.display = 'none'; }
+      if (!biometricState.r_fp) { fpErr.style.display = 'block'; ok = false; } else { fpErr.style.display = 'none'; }
+      if (!ok) return;
+    }
+    document.getElementById('r-step-' + step).classList.remove('active');
+    document.getElementById('rdot-' + step).classList.remove('active');
+    document.getElementById('rdot-' + step).classList.add('done');
+    document.getElementById('r-step-' + (step+1)).classList.add('active');
+    document.getElementById('rdot-' + (step+1)).classList.add('active');
+  }
+
+  function rPrevStep(step) {
+    document.getElementById('r-step-' + step).classList.remove('active');
+    document.getElementById('rdot-' + step).classList.remove('active');
+    document.getElementById('r-step-' + (step-1)).classList.add('active');
+    document.getElementById('rdot-' + (step-1)).classList.remove('done');
+    document.getElementById('rdot-' + (step-1)).classList.add('active');
+  }
+
+  function resetResidentReg() {
+    [1,2,3].forEach(i => {
+      document.getElementById('r-step-'+i).classList.remove('active');
+      document.getElementById('rdot-'+i).classList.remove('active','done');
+    });
+    document.getElementById('r-step-1').classList.add('active');
+    document.getElementById('rdot-1').classList.add('active');
+    biometricState.r_fp = false; biometricState.r_face = false;
+    ['r-fp-box','r-face-box'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = id.includes('fp') ? '👆' : '🤳'; el.style.cssText='cursor:pointer;transition:all 0.3s;'; el.style.pointerEvents='auto'; el.style.color=''; el.style.background=''; el.style.borderColor=''; el.style.opacity='1'; }
+    });
+  }
+
+  // ===================== HEALTH WORKER REGISTRATION =====================
+  function hNextStep(step) {
+    if (step === 1) {
+      const name = document.getElementById('h-name').value.trim();
+      const role = document.getElementById('h-role').value;
+      const nameErr = document.getElementById('h-name-err');
+      const roleErr = document.getElementById('h-role-err');
+      let ok = true;
+      if (!name) { nameErr.style.display = 'block'; document.getElementById('h-name').classList.add('field-error'); ok = false; }
+      else { nameErr.style.display = 'none'; document.getElementById('h-name').classList.remove('field-error'); }
+      if (!role) { roleErr.style.display = 'block'; document.getElementById('h-role').classList.add('field-error'); ok = false; }
+      else { roleErr.style.display = 'none'; document.getElementById('h-role').classList.remove('field-error'); }
+      if (!ok) return;
+    }
+    if (step === 2) {
+      const email = document.getElementById('h-email').value.trim();
+      const pw = document.getElementById('h-pw').value;
+      const pw2 = document.getElementById('h-pw2').value;
+      const pwErr = document.getElementById('h-pw2-err');
+      const fpErr = document.getElementById('h-fp-err');
+      let ok = true;
+      const allEmails = [DEMO.resident.email, DEMO.healthworker.email, ...registeredUsers.map(u => u.email)];
+      if (!email) { pwErr.textContent = 'Email is required.'; pwErr.style.display = 'block'; ok = false; }
+      else if (allEmails.includes(email)) { pwErr.textContent = 'This email is already registered.'; pwErr.style.display = 'block'; ok = false; }
+      else if (!pw || pw.length < 8) { pwErr.textContent = 'Password must be at least 8 characters.'; pwErr.style.display = 'block'; ok = false; }
+      else if (pw !== pw2) { pwErr.textContent = 'Passwords do not match.'; pwErr.style.display = 'block'; ok = false; }
+      else { pwErr.style.display = 'none'; }
+      if (!biometricState.h_fp) { fpErr.style.display = 'block'; ok = false; } else { fpErr.style.display = 'none'; }
+      if (!ok) return;
+    }
+    document.getElementById('h-step-' + step).classList.remove('active');
+    document.getElementById('hdot-' + step).classList.remove('active');
+    document.getElementById('hdot-' + step).classList.add('done');
+    document.getElementById('h-step-' + (step+1)).classList.add('active');
+    document.getElementById('hdot-' + (step+1)).classList.add('active');
+  }
+
+  function hPrevStep(step) {
+    document.getElementById('h-step-' + step).classList.remove('active');
+    document.getElementById('hdot-' + step).classList.remove('active');
+    document.getElementById('h-step-' + (step-1)).classList.add('active');
+    document.getElementById('hdot-' + (step-1)).classList.remove('done');
+    document.getElementById('hdot-' + (step-1)).classList.add('active');
+  }
+
+  function resetHWReg() {
+    [1,2,3].forEach(i => {
+      document.getElementById('h-step-'+i).classList.remove('active');
+      document.getElementById('hdot-'+i).classList.remove('active','done');
+    });
+    document.getElementById('h-step-1').classList.add('active');
+    document.getElementById('hdot-1').classList.add('active');
+    biometricState.h_fp = false; biometricState.h_face = false;
+    ['h-fp-box','h-face-box'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = id.includes('fp') ? '👆' : '🤳'; el.style.cssText='cursor:pointer;transition:all 0.3s;'; el.style.pointerEvents='auto'; el.style.color=''; el.style.background=''; el.style.borderColor=''; el.style.opacity='1'; }
+    });
+  }
+
+  function doRegister(type) {
+    if (type === 'healthworker') {
+      const prc = document.getElementById('h-prc-num').value.trim();
+      const prcErr = document.getElementById('h-prc-err');
+      const faceErr = document.getElementById('h-face-err');
+      let ok = true;
+      if (!prc) { prcErr.style.display = 'block'; document.getElementById('h-prc-num').classList.add('field-error'); ok = false; } else { prcErr.style.display = 'none'; }
+      if (!biometricState.h_face) { faceErr.style.display = 'block'; ok = false; } else { faceErr.style.display = 'none'; }
+      if (!ok) return;
+      const name  = document.getElementById('h-name').value.trim();
+      const role  = document.getElementById('h-role').value;
+      const email = document.getElementById('h-email').value.trim();
+      const pw    = document.getElementById('h-pw').value;
+      registeredUsers.push({
+        type: 'healthworker', name, role, email, pw, isNew: true,
+        bioFP: biometricState.h_fp, bioFace: biometricState.h_face
+      });
+      showToast('✅ Submitted! Account pending RHU admin approval.');
+    } else {
+      const faceErr = document.getElementById('r-face-err');
+      if (!biometricState.r_face) { faceErr.style.display = 'block'; return; }
+      faceErr.style.display = 'none';
+      const name  = document.getElementById('r-name').value.trim();
+      const age   = document.getElementById('r-age').value;
+      const sex   = document.getElementById('r-sex').value;
+      const dob   = document.getElementById('r-dob') ? document.getElementById('r-dob').value : '';
+      const email = document.getElementById('r-email').value.trim();
+      const pw    = document.getElementById('r-pw').value;
+      registeredUsers.push({
+        type: 'resident', name, age, sex, dob, email, pw, isNew: true,
+        bioFP: biometricState.r_fp, bioFace: biometricState.r_face
+      });
+      showToast('✅ Account created! You can now log in with your email, password, or biometrics.');
+    }
+    setTimeout(() => { goToLogin(); }, 2000);
+  }
+
+  // ===================== APPOINTMENT APPROVAL =====================
+  let apptRequests = [
+    { id: 1, patient: 'Maria Santos', date: 'April 14, 2026', time: '09:00 AM', purpose: 'Checkup', status: 'pending' },
+    { id: 2, patient: 'Juan Dela Cruz', date: 'April 15, 2026', time: '10:00 AM', purpose: 'Follow-up (Diabetes)', status: 'pending' },
+    { id: 3, patient: 'Lena Villanueva', date: 'April 16, 2026', time: '01:00 PM', purpose: 'Prenatal Check', status: 'pending' },
+    { id: 4, patient: 'Anna Reyes', date: 'April 10, 2026', time: '11:00 AM', purpose: 'Vaccination', status: 'approved' },
+    { id: 5, patient: 'Pedro Lim', date: 'April 9, 2026', time: '02:00 PM', purpose: 'BP Monitoring', status: 'approved' },
+    { id: 6, patient: 'Rosario Cruz', date: 'April 8, 2026', time: '03:00 PM', purpose: 'General Checkup', status: 'rescheduled', newDate: 'April 18, 2026', newTime: '09:30 AM' },
+    { id: 7, patient: 'Ben Aquino', date: 'April 7, 2026', time: '08:00 AM', purpose: 'Lab Result Review', status: 'rejected' }
+  ];
+
+  let currentApptFilter = 'pending';
+  let currentApptId = null;
+
+  function renderApptTable(filter) {
+    const tbody = document.getElementById('appt-requests-tbody');
+    if (!tbody) return;
+    const filtered = apptRequests.filter(a => a.status === filter);
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;">No ${filter} appointments.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = filtered.map(a => {
+      const badgeMap = { pending: 'badge-yellow', approved: 'badge-green', rescheduled: 'badge-blue', rejected: 'badge-red' };
+      const labelMap = { pending: '⏳ Pending', approved: '✅ Approved', rescheduled: '🔄 Rescheduled', rejected: '❌ Rejected' };
+      const dateDisplay = a.status === 'rescheduled' ? `<span style="text-decoration:line-through;color:var(--muted);font-size:0.8rem;">${a.date}</span><br><strong>${a.newDate} ${a.newTime}</strong>` : a.date;
+      const actionBtn = a.status === 'pending'
+        ? `<button class="action-btn review" onclick="openApptActionModal(${a.id})">👁 Review</button>`
+        : `<span style="font-size:0.8rem;color:var(--muted);">—</span>`;
+      return `<tr>
+        <td><strong>${a.patient}</strong></td>
+        <td>${dateDisplay}</td>
+        <td>${a.time}</td>
+        <td>${a.purpose}</td>
+        <td><span class="badge ${badgeMap[a.status]}">${labelMap[a.status]}</span></td>
+        <td>${actionBtn}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function updateApptCounts() {
+    ['pending','approved','rescheduled','rejected'].forEach(s => {
+      const el = document.getElementById('count-' + s);
+      if (el) el.textContent = apptRequests.filter(a => a.status === s).length;
+    });
+  }
+
+  function filterApptTab(filter, btn) {
+    currentApptFilter = filter;
+    document.querySelectorAll('.appt-filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderApptTable(filter);
+  }
+
+  function openApptActionModal(id) {
+    currentApptId = id;
+    const a = apptRequests.find(r => r.id === id);
+    if (!a) return;
+    document.getElementById('appt-modal-title').textContent = '📋 Appointment Request — ' + a.patient;
+    document.getElementById('appt-modal-summary').innerHTML = `
+      <div class="confirm-row"><span>👤 Patient:</span><strong>${a.patient}</strong></div>
+      <div class="confirm-row"><span>📅 Date:</span><strong>${a.date}</strong></div>
+      <div class="confirm-row"><span>🕘 Time:</span><strong>${a.time}</strong></div>
+      <div class="confirm-row"><span>📋 Purpose:</span><strong>${a.purpose}</strong></div>
+    `;
+    document.getElementById('appt-note').value = '';
+    openModal('appt-action-modal');
+  }
+
+  function openRescheduleModal() {
+    const a = apptRequests.find(r => r.id === currentApptId);
+    if (a) document.getElementById('reschedule-patient-name').textContent = a.patient;
+    document.getElementById('reschedule-date').value = '';
+    document.getElementById('reschedule-time').value = '09:00 AM';
+    document.getElementById('reschedule-reason').value = '';
+    document.getElementById('reschedule-date-err').style.display = 'none';
+    closeModal('appt-action-modal');
+    openModal('appt-reschedule-modal');
+  }
+
+  function handleApptAction(action) {
+    const idx = apptRequests.findIndex(r => r.id === currentApptId);
+    if (idx === -1) return;
+    const a = apptRequests[idx];
+
+    if (action === 'rescheduled') {
+      const newDate = document.getElementById('reschedule-date').value;
+      if (!newDate) { document.getElementById('reschedule-date-err').style.display = 'block'; return; }
+      document.getElementById('reschedule-date-err').style.display = 'none';
+      const newTime = document.getElementById('reschedule-time').value;
+      const formatted = new Date(newDate).toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+      apptRequests[idx] = { ...a, status: 'rescheduled', newDate: formatted, newTime: newTime };
+      closeModal('appt-reschedule-modal');
+      showToast('🔄 New schedule sent to ' + a.patient);
+    } else if (action === 'approved') {
+      apptRequests[idx] = { ...a, status: 'approved' };
+      closeModal('appt-action-modal');
+      showToast('✅ Appointment approved for ' + a.patient);
+    } else {
+      apptRequests[idx] = { ...a, status: 'rejected' };
+      closeModal('appt-action-modal');
+      showToast('❌ Appointment rejected for ' + a.patient);
+    }
+
+    updateApptCounts();
+    renderApptTable(currentApptFilter);
+  }
+
+  // ===================== VIEW SWITCHING =====================
+  function showView(role, view) {
+    const prefix = role === 'resident' ? 'res' : 'hw';
+    document.querySelectorAll('#screen-' + (role==='resident'?'resident':'healthworker') + ' .view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('#screen-' + (role==='resident'?'resident':'healthworker') + ' .nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(prefix + '-view-' + view).classList.add('active');
+    const navEl = document.getElementById(prefix + '-nav-' + view);
+    if (navEl) navEl.classList.add('active');
+    // Initialize appointment table when switching to it
+    if (view === 'appointments' && role !== 'resident') {
+      renderApptTable(currentApptFilter);
+      updateApptCounts();
+      buildCalendar('hw-calendar', false);
+    }
+    // Close patient detail on nav
+    if (view !== 'patients') {
+      const pd = document.getElementById('patient-detail-view');
+      if(pd) { pd.style.display = 'none'; document.getElementById('patients-list-view').style.display='block'; }
+    }
+  }
+
+  // ===================== PATIENTS (HW ONLY) =====================
+  function filterPatients() {
+    const q = document.getElementById('patient-search').value.toLowerCase();
+    document.querySelectorAll('#patients-tbody .patient-card-item').forEach(card => {
+      card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  }
+
+  // Risk predictions per patient (keyed by name)
+  const PATIENT_RISK = {
+    'Maria Santos':    { level: 'HIGH RISK',   risks: ['Heart Disease', 'High Blood Pressure', 'Stroke'] },
+    'Juan Dela Cruz':  { level: 'HIGH RISK',   risks: ['Diabetes Complications', 'Kidney Disease', 'Neuropathy'] },
+    'Anna Reyes':      { level: 'LOW RISK',    risks: ['Seasonal Infections'] },
+    'Pedro Lim':       { level: 'HIGH RISK',   risks: ['Stroke', 'Heart Failure', 'Kidney Disease'] },
+    'Target Dela Cruz':{ level: 'MODERATE RISK', risks: ['Gestational Diabetes', 'Pre-eclampsia'] },
+  };
+
+  function openPatientDetail(name, age, sex, diag, status, bmi, bp, bs, bt, hist, med) {
+    showView('hw','patients');
+    document.getElementById('patients-list-view').style.display = 'none';
+    document.getElementById('patient-detail-view').style.display = 'block';
+    document.getElementById('pd-name').textContent = name;
+    document.getElementById('pd-meta').textContent = 'Age: ' + age + '   |   Sex: ' + (sex==='F'?'Female':'Male') + '   |   Diagnosis: ' + diag;
+    document.getElementById('pd-avatar').textContent = sex === 'F' ? '👩' : '👨';
+    const riskEl = document.getElementById('pd-risk');
+    const isHighRisk = status === 'High Risk';
+    riskEl.textContent = (isHighRisk ? '⚠ ' : '✓ ') + status;
+    riskEl.style.background = isHighRisk ? '#fee2e2' : '#d1fae5';
+    riskEl.style.color = isHighRisk ? '#991b1b' : '#065f46';
+    document.getElementById('pd-bmi').textContent = bmi;
+    document.getElementById('pd-bp').textContent = bp;
+    document.getElementById('pd-bs').textContent = bs;
+    document.getElementById('pd-bt').textContent = bt;
+    document.getElementById('pd-hist').textContent = hist;
+    document.getElementById('pd-med').textContent = med;
+
+    // Populate risk prediction section
+    const riskData = PATIENT_RISK[name];
+    const banner = document.getElementById('pd-risk-banner');
+    const list = document.getElementById('pd-risk-list');
+    const note = document.getElementById('pd-risk-note');
+    if (riskData) {
+      const isHigh = riskData.level === 'HIGH RISK';
+      const isMod  = riskData.level === 'MODERATE RISK';
+      banner.innerHTML = (isHigh ? '⚠️' : isMod ? '⚡' : '✅') + ' <span>' + riskData.level + '</span>';
+      banner.style.background = isHigh ? '#fee2e2' : isMod ? '#fef3c7' : '#d1fae5';
+      banner.style.color      = isHigh ? '#991b1b' : isMod ? '#92400e' : '#065f46';
+      banner.style.border     = '1.5px solid ' + (isHigh ? '#fca5a5' : isMod ? '#fde68a' : '#6ee7b7');
+      list.innerHTML = riskData.risks.map(r => `<li><span class="risk-arrow">▶</span> ${r}</li>`).join('');
+      note.style.display = 'block';
+    } else {
+      banner.innerHTML = 'ℹ️ <span>No Risk Data</span>';
+      banner.style.background = '#f1f5f9';
+      banner.style.color = '#64748b';
+      banner.style.border = '1.5px solid #cbd5e1';
+      list.innerHTML = '<li style="color:var(--muted);">No risk assessment available.</li>';
+      note.style.display = 'none';
+    }
+  }
+
+  function closePatientDetail() {
+    document.getElementById('patient-detail-view').style.display = 'none';
+    document.getElementById('patients-list-view').style.display = 'block';
+  }
+
+  // ===================== CALENDAR =====================
+  function buildCalendar(containerId, interactive) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+
+    let html = '<div class="calendar-grid">';
+    days.forEach(d => html += `<div class="cal-header">${d}</div>`);
+    for(let i=0;i<firstDay;i++) html += '<div class="cal-day empty"></div>';
+    for(let d=1;d<=daysInMonth;d++) {
+      const isToday = d === now.getDate();
+      const cls = isToday ? 'cal-day today' : 'cal-day';
+      const click = interactive ? `onclick="selectDate(this,${d},${month+1},${year})"` : '';
+      html += `<div class="${cls}" ${click}>${d}</div>`;
+    }
+    html += '</div>';
+    container.innerHTML = html;
+    const hwMonth = document.getElementById('hw-cal-month');
+    if(hwMonth) hwMonth.textContent = now.toLocaleString('default',{month:'long',year:'numeric'});
+  }
+
+  function selectDate(el, d, m, y) {
+    document.querySelectorAll('#res-calendar .cal-day').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedApptDate = `${['','January','February','March','April','May','June','July','August','September','October','November','December'][m]} ${d}, ${y}`;
+  }
+
+  // ===================== APPOINTMENT BOOKING =====================
+  function openBookConfirm() {
+    const date = selectedApptDate || 'No date selected';
+    const time = document.getElementById('appt-time').value;
+    const purpose = document.getElementById('appt-purpose').value;
+    if (!selectedApptDate) { showToast('⚠ Please select a date first.'); return; }
+    document.getElementById('book-summary').innerHTML = `
+      <div class="confirm-row"><span>📅 Date:</span><strong>${date}</strong></div>
+      <div class="confirm-row"><span>🕘 Time:</span><strong>${time}</strong></div>
+      <div class="confirm-row"><span>📋 Purpose:</span><strong>${purpose}</strong></div>
+      <div class="confirm-row"><span>👤 Patient:</span><strong>${window._currentResidentName || 'Maria Santos'}</strong></div>
+    `;
+    openModal('book-confirm-modal');
+  }
+
+  function confirmBooking() {
+    closeModal('book-confirm-modal');
+    const date = selectedApptDate;
+    const time = document.getElementById('appt-time').value;
+    const purpose = document.getElementById('appt-purpose').value;
+    const tbody = document.getElementById('appt-list');
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${date}</td><td>${time}</td><td>${purpose}</td><td><span class="badge badge-blue">Scheduled</span></td>`;
+    tbody.appendChild(row);
+    showToast('✅ Appointment confirmed for ' + date);
+    selectedApptDate = null;
+    buildCalendar('res-calendar', true);
+  }
+
+  // ===================== MODALS =====================
+  function openModal(id) { document.getElementById(id).classList.add('active'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+  // Close modal on overlay click
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('overlay')) {
+      e.target.classList.remove('active');
+    }
+  });
+
+  function confirmLogout() {
+    closeModal('logout-modal');
+    currentUser = null;
+    showToast('Logged out successfully.');
+    document.getElementById('loading-screen').style.display = 'flex';
+    setTimeout(() => {
+      document.getElementById('loading-screen').style.display = 'none';
+      showScreen('login');
+      document.getElementById('login-email').value = '';
+      document.getElementById('login-pw').value = '';
+    }, 900);
+  }
+
+  // ===================== APPLY USER TO UI =====================
+  // Full snapshot of Maria Santos's demo data — used to restore on every demo login
+  const DEMO_RESIDENT_PROFILE = {
+    name: 'Maria Santos',
+    avatar: '👩',
+    meta: 'Age: 30 &nbsp;|&nbsp; Sex: Female',
+    riskTag: '⚠ Screening for Hypertension',
+    infoValues: ['June 17, 1995', 'O+', '25.03', '130/80 mmHg', '98 mg/dL', '12-982XXXXX-XX', 'Juan Santos (Husband) — 09XXXXXXXXX'],
+    histValues: ['None', 'Pneumonia (2022)', 'Losartan 50g (Daily)'],
+    records: `
+      <div class="record-item">
+        <div class="record-left"><div class="record-diagnosis">Hypertension Monitoring</div><div class="record-date">📅 20 Jan 2025</div></div>
+        <span class="badge badge-yellow">On Schedule</span>
+      </div>
+      <div class="record-item">
+        <div class="record-left"><div class="record-diagnosis">General Checkup</div><div class="record-date">📅 03 Mar 2025</div></div>
+        <span class="badge badge-green">Treated</span>
+      </div>
+      <div class="record-item">
+        <div class="record-left"><div class="record-diagnosis">Cough and Cold</div><div class="record-date">📅 07 May 2025</div></div>
+        <span class="badge badge-green">Treated</span>
+      </div>
+      <div class="record-item">
+        <div class="record-left"><div class="record-diagnosis">Headache</div><div class="record-date">📅 07 May 2025</div></div>
+        <span class="badge badge-green">Treated</span>
+      </div>
+      <div class="record-item">
+        <div class="record-left"><div class="record-diagnosis">Blood Pressure Check</div><div class="record-date">📅 22 Jun 2025</div></div>
+        <span class="badge badge-yellow">On Schedule</span>
+      </div>
+      <div class="record-item">
+        <div class="record-left"><div class="record-diagnosis">Fever</div><div class="record-date">📅 14 Aug 2025</div></div>
+        <span class="badge badge-green">Treated</span>
+      </div>
+      <div class="record-item" style="border-bottom:none;">
+        <div class="record-left"><div class="record-diagnosis">Annual Physical Exam</div><div class="record-date">📅 10 Nov 2025</div></div>
+        <span class="badge badge-green">Treated</span>
+      </div>`,
+    appointments: `
+      <tr><td>Feb 23, 2026</td><td>09:00 AM</td><td>General Checkup</td><td><span class="badge badge-green">Done</span></td></tr>
+      <tr><td>Mar 10, 2026</td><td>10:00 AM</td><td>BP Monitoring</td><td><span class="badge badge-green">Done</span></td></tr>
+      <tr><td>Apr 14, 2026</td><td>09:00 AM</td><td>Follow-up Checkup</td><td><span class="badge badge-blue">Scheduled</span></td></tr>`,
+    riskBanner: `<div class="risk-icon">⚠️</div><div class="risk-label">HIGH RISK</div>`,
+    riskAtList: `
+      <li><span class="risk-arrow">▶</span> Heart Disease</li>
+      <li><span class="risk-arrow">▶</span> High Blood Pressure</li>
+      <li><span class="risk-arrow">▶</span> Stroke</li>`,
+    riskRecoList: `
+      <li><span class="reco-arrow">▶</span> Lifestyle Changes</li>
+      <li><span class="reco-arrow">▶</span> Consult RHU Regularly</li>
+      <li><span class="reco-arrow">▶</span> Daily BP Monitoring</li>
+      <li><span class="reco-arrow">▶</span> Low-sodium Diet</li>`
+  };
+
+  function applyUserToUI(user) {
+    const firstName = user.name.split(' ')[0];
+    if (user.type === 'resident') {
+      // Greeting
+      const greet = document.getElementById('res-greeting');
+      if (greet) greet.textContent = 'Hello, ' + firstName + ' 👋';
+      // Header badge
+      const badge = document.getElementById('resident-badge');
+      if (badge) badge.textContent = user.name;
+      // Update booking confirm patient name reference
+      window._currentResidentName = user.name;
+
+      if (user.isNew) {
+        // ---- New account: show empty state ----
+
+        // Dashboard records
+        const recList = document.getElementById('recent-records-list');
+        if (recList) recList.innerHTML = '<div class="record-empty">No records yet.</div>';
+
+        // Appointments
+        const apptList = document.getElementById('appt-list');
+        if (apptList) apptList.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:16px;">No appointments yet.</td></tr>';
+
+        // Profile header
+        const regRecord = registeredUsers.find(u => u.name === user.name && u.type === 'resident');
+        const ageTxt = (regRecord && regRecord.age) ? regRecord.age : '—';
+        const sexTxt = (regRecord && regRecord.sex) ? regRecord.sex : '—';
+        const dobTxt = (regRecord && regRecord.dob) ? new Date(regRecord.dob).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '—';
+
+        document.getElementById('profile-avatar').textContent = sexTxt === 'Female' ? '👩' : sexTxt === 'Male' ? '👨' : '👤';
+        document.getElementById('profile-name').textContent = user.name;
+        document.getElementById('profile-meta').textContent = 'Age: ' + ageTxt + ' | Sex: ' + sexTxt;
+        const rt = document.getElementById('profile-risk-tag');
+        rt.textContent = 'No screening data yet';
+        rt.style.background = '#f1f5f9'; rt.style.color = '#64748b'; rt.style.borderColor = '#cbd5e1';
+
+        // Personal info fields
+        document.getElementById('prof-birthday').textContent   = dobTxt;
+        document.getElementById('prof-bloodtype').textContent  = '—';
+        document.getElementById('prof-bmi').textContent        = '—';
+        document.getElementById('prof-bp').textContent         = '—';
+        document.getElementById('prof-bs').textContent         = '—';
+        document.getElementById('prof-philhealth').textContent = '—';
+        document.getElementById('prof-emergency').textContent  = '—';
+
+        // Medical history fields
+        document.getElementById('prof-allergies').textContent  = '—';
+        document.getElementById('prof-illnesses').textContent  = '—';
+        document.getElementById('prof-medication').textContent = '—';
+
+        // Risk panel
+        const riskBanner = document.querySelector('#res-view-risk .risk-banner');
+        if (riskBanner) riskBanner.innerHTML = '<div class="risk-icon">ℹ️</div><div class="risk-label" style="font-size:1rem;color:var(--muted);">No Risk Data Yet</div>';
+        const riskLists = document.querySelectorAll('#res-view-risk .risk-list');
+        riskLists.forEach(ul => { ul.innerHTML = '<li style="color:var(--muted);">Complete your health profile first.</li>'; });
+
+      } else {
+        // ---- Demo account: restore original data ----
+        const d = DEMO_RESIDENT_PROFILE;
+
+        const recList = document.getElementById('recent-records-list');
+        if (recList) recList.innerHTML = d.records;
+
+        const apptList = document.getElementById('appt-list');
+        if (apptList) apptList.innerHTML = d.appointments;
+
+        // Profile header
+        document.getElementById('profile-avatar').textContent = d.avatar;
+        document.getElementById('profile-name').textContent   = d.name;
+        document.getElementById('profile-meta').innerHTML     = d.meta;
+        const rt = document.getElementById('profile-risk-tag');
+        rt.textContent = d.riskTag; rt.style.background = ''; rt.style.color = ''; rt.style.borderColor = '';
+
+        // Personal info fields
+        document.getElementById('prof-birthday').textContent   = d.infoValues[0];
+        document.getElementById('prof-bloodtype').textContent  = d.infoValues[1];
+        document.getElementById('prof-bmi').textContent        = d.infoValues[2];
+        document.getElementById('prof-bp').textContent         = d.infoValues[3];
+        document.getElementById('prof-bs').textContent         = d.infoValues[4];
+        document.getElementById('prof-philhealth').textContent = d.infoValues[5];
+        document.getElementById('prof-emergency').textContent  = d.infoValues[6];
+
+        // Medical history fields
+        document.getElementById('prof-allergies').textContent  = d.histValues[0];
+        document.getElementById('prof-illnesses').textContent  = d.histValues[1];
+        document.getElementById('prof-medication').textContent = d.histValues[2];
+
+        // Risk panel
+        const riskBanner = document.querySelector('#res-view-risk .risk-banner');
+        if (riskBanner) riskBanner.innerHTML = d.riskBanner;
+        const riskLists = document.querySelectorAll('#res-view-risk .risk-list');
+        if (riskLists[0]) riskLists[0].innerHTML = d.riskAtList;
+        if (riskLists[1]) riskLists[1].innerHTML = d.riskRecoList;
+      }
+    } else {
+      // ---- Health worker ----
+      const hwGreet = document.getElementById('hw-greeting');
+      if (hwGreet) hwGreet.textContent = 'Hello, ' + user.name + ' 👋';
+    }
+  }
+
+  function sendReset() {
+    const v = document.getElementById('forgot-input').value.trim();
+    if (!v) { showToast('⚠ Please enter your email or phone.'); return; }
+    closeModal('forgot-modal');
+    showToast('✅ Reset link sent to ' + v);
+    document.getElementById('forgot-input').value = '';
+  }
+
+  let selectedLang = 'English';
+
+  function setLang(lang, rowEl) {
+    selectedLang = lang;
+    // Check the right radio button
+    document.querySelectorAll('.lang-radio').forEach(r => r.checked = false);
+    if (rowEl) {
+      const radio = rowEl.querySelector('.lang-radio');
+      if (radio) radio.checked = true;
+    }
+    // Highlight selected row
+    document.querySelectorAll('.lang-option').forEach(o => o.style.background = '');
+    if (rowEl) rowEl.style.background = '#eef2ff';
+  }
+
+  function applyLang() {
+    // Update all lang buttons to show selected language
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.textContent = '🌐 ' + selectedLang;
+    });
+    closeModal('lang-modal');
+    showToast('✅ Language set to: ' + selectedLang);
+  }
+
+  // ===================== WALK-IN / ADD RECORD =====================
+  let walkinRecords = [];
+
+  function submitWalkin() {
+    const name    = document.getElementById('wi-name').value.trim();
+    const age     = document.getElementById('wi-age').value.trim();
+    const sex     = document.getElementById('wi-sex').value;
+    const time    = document.getElementById('wi-time').value;
+    const purpose = document.getElementById('wi-purpose').value;
+    const notes   = document.getElementById('wi-notes').value.trim();
+
+    // Validation
+    let ok = true;
+    const nameErr    = document.getElementById('wi-name-err');
+    const ageErr     = document.getElementById('wi-age-err');
+    const sexErr     = document.getElementById('wi-sex-err');
+    const purposeErr = document.getElementById('wi-purpose-err');
+
+    nameErr.style.display    = !name    ? 'block' : 'none'; if (!name)    ok = false;
+    ageErr.style.display     = !age     ? 'block' : 'none'; if (!age)     ok = false;
+    sexErr.style.display     = !sex     ? 'block' : 'none'; if (!sex)     ok = false;
+    purposeErr.style.display = !purpose ? 'block' : 'none'; if (!purpose) ok = false;
+    if (!ok) return;
+
+    const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const record = { name, age, sex, time, purpose, notes, date: today };
+    walkinRecords.push(record);
+
+    renderWalkinTable();
+    closeModal('walkin-modal');
+    clearWalkinForm();
+    showToast('✅ Walk-in record saved for ' + name);
+  }
+
+  function renderWalkinTable() {
+    const tbody = document.getElementById('walkin-tbody');
+    const card  = document.getElementById('walkin-card');
+    const badge = document.getElementById('walkin-count-badge');
+    if (!tbody) return;
+
+    card.style.display = 'block';
+    badge.textContent  = walkinRecords.length + ' walk-in' + (walkinRecords.length !== 1 ? 's' : '') + ' today';
+
+    tbody.innerHTML = walkinRecords.map((r, i) => `
+      <tr>
+        <td>${r.time}</td>
+        <td><strong>${r.name}</strong></td>
+        <td>${r.age}</td>
+        <td>${r.sex === 'F' ? 'Female' : 'Male'}</td>
+        <td>${r.purpose}</td>
+        <td style="font-size:0.82rem;color:var(--muted);max-width:160px;">${r.notes || '—'}</td>
+        <td><span class="badge" style="background:#ede9fe;color:#5b21b6;">🚶 Walk-in</span></td>
+      </tr>
+    `).join('');
+  }
+
+  function clearWalkinForm() {
+    ['wi-name','wi-age','wi-notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    ['wi-sex','wi-purpose'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    document.getElementById('wi-time').value = '09:00 AM';
+    ['wi-name-err','wi-age-err','wi-sex-err','wi-purpose-err'].forEach(id => {
+      const el = document.getElementById(id); if(el) el.style.display = 'none';
+    });
+  }
+
+
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ===================== KEYBOARD ACCESSIBILITY =====================
+  // Rule 6: Easy reversal of actions — support Escape to close modals
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.overlay.active').forEach(o => o.classList.remove('active'));
+    }
+  });
+
+  // Bio buttons keyboard support
+  document.querySelectorAll('.bio-btn').forEach(btn => {
+    btn.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') btn.click(); });
+  });
+</script>
+</body>
+</html>
