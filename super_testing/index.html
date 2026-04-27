@@ -624,6 +624,25 @@
   /* ===================== VALIDATION ===================== */
   .error-msg { font-size: 0.78rem; color: #ef4444; margin-top: 4px; }
 
+  /* ===================== ALL RECORDS MODAL ===================== */
+  .rec-filter-btn {
+    padding: 5px 14px; border-radius: 20px; border: 1.5px solid var(--border);
+    background: #fff; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+    color: var(--muted); font-family: inherit; transition: all 0.15s;
+  }
+  .rec-filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .rec-filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  .all-record-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 8px; border-bottom: 1px solid var(--border); gap: 10px;
+  }
+  .all-record-item:last-child { border-bottom: none; }
+  .all-record-left { flex: 1; min-width: 0; }
+  .all-record-diagnosis { font-weight: 700; font-size: 0.93rem; color: var(--text); }
+  .all-record-date { font-size: 0.77rem; color: var(--muted); margin-top: 3px; }
+  .all-record-notes { font-size: 0.77rem; color: #64748b; margin-top: 3px; font-style: italic; }
+
   /* ===================== PATIENT CARD LIST ===================== */
   .patient-card-list { display: flex; flex-direction: column; }
   .patient-card-item {
@@ -1366,6 +1385,40 @@
   </div>
 </div>
 
+<!-- ===== ALL RECORDS MODAL ===== -->
+<div class="overlay" id="all-records-modal">
+  <div class="modal" style="max-width:520px;width:95%;max-height:85vh;display:flex;flex-direction:column;padding:0;overflow:hidden;">
+    <!-- Modal Header -->
+    <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.4rem;">📋</span>
+          <div>
+            <div style="font-size:1.05rem;font-weight:800;color:var(--primary);">All Medical Records</div>
+            <div id="all-records-patient-name" style="font-size:0.8rem;color:var(--muted);margin-top:1px;"></div>
+          </div>
+        </div>
+        <button onclick="closeModal('all-records-modal')" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);line-height:1;padding:4px;">✕</button>
+      </div>
+      <!-- Filter tabs -->
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+        <button class="rec-filter-btn active" onclick="filterRecords('all',this)">All</button>
+        <button class="rec-filter-btn" onclick="filterRecords('Treated',this)">✅ Treated</button>
+        <button class="rec-filter-btn" onclick="filterRecords('On Schedule',this)">🕐 On Schedule</button>
+        <button class="rec-filter-btn" onclick="filterRecords('On Follow-up',this)">🔄 Follow-up</button>
+      </div>
+    </div>
+    <!-- Scrollable records list -->
+    <div id="all-records-list" style="overflow-y:auto;flex:1;padding:12px 16px;">
+    </div>
+    <!-- Footer -->
+    <div style="padding:14px 20px;border-top:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <span id="all-records-count" style="font-size:0.8rem;color:var(--muted);"></span>
+      <button class="btn-cancel" onclick="closeModal('all-records-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== SCREEN: RESIDENT APP ===== -->
 <div class="screen" id="screen-resident">
   <div class="app-shell">
@@ -1428,7 +1481,7 @@
               </div>
             </div>
             <div style="text-align:center;margin-top:14px;">
-              <button class="btn-secondary" onclick="showView('resident','profile')">View All Records</button>
+              <button class="btn-secondary" onclick="openAllRecordsModal()">View All Records</button>
             </div>
           </div>
           <div class="card">
@@ -2754,6 +2807,82 @@
     });
     closeModal('lang-modal');
     showToast('✅ Language set to: ' + selectedLang);
+  }
+
+  // ===================== ALL RECORDS MODAL =====================
+  const DEMO_ALL_RECORDS = [
+    { date: '20 Jan 2025', diagnosis: 'Hypertension Monitoring', status: 'On Schedule', notes: 'BP: 135/85 mmHg — continue medication' },
+    { date: '03 Mar 2025', diagnosis: 'General Checkup',         status: 'Treated',     notes: 'All vitals normal' },
+    { date: '07 May 2025', diagnosis: 'Cough and Cold',          status: 'Treated',     notes: 'Prescribed Amoxicillin 500mg' },
+    { date: '07 May 2025', diagnosis: 'Headache',                status: 'Treated',     notes: 'Likely tension-type; rest advised' },
+    { date: '22 Jun 2025', diagnosis: 'Blood Pressure Check',    status: 'On Schedule', notes: 'BP: 130/82 mmHg — stable' },
+    { date: '14 Aug 2025', diagnosis: 'Fever',                   status: 'Treated',     notes: 'Temp 38.4°C; paracetamol given' },
+    { date: '10 Nov 2025', diagnosis: 'Annual Physical Exam',    status: 'Treated',     notes: 'No major concerns; repeat BMI check recommended' },
+  ];
+
+  // Per-session new-account records (empty by default)
+  const NEW_ACCOUNT_RECORDS = [];
+
+  function openAllRecordsModal() {
+    const isNew = currentUser && currentUser.isNew;
+    const records = isNew ? NEW_ACCOUNT_RECORDS : DEMO_ALL_RECORDS;
+
+    document.getElementById('all-records-patient-name').textContent =
+      currentUser ? currentUser.name : 'Maria Santos';
+
+    _renderAllRecords(records, 'all');
+
+    // Reset filter tabs
+    document.querySelectorAll('.rec-filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.rec-filter-btn').classList.add('active');
+
+    openModal('all-records-modal');
+  }
+
+  function filterRecords(status, btn) {
+    document.querySelectorAll('.rec-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const isNew = currentUser && currentUser.isNew;
+    const records = isNew ? NEW_ACCOUNT_RECORDS : DEMO_ALL_RECORDS;
+    _renderAllRecords(records, status);
+  }
+
+  function _renderAllRecords(records, status) {
+    const container = document.getElementById('all-records-list');
+    const countEl   = document.getElementById('all-records-count');
+
+    const filtered = status === 'all'
+      ? records
+      : records.filter(r => r.status === status);
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--muted);">
+        <div style="font-size:2.5rem;margin-bottom:10px;">📭</div>
+        <div style="font-weight:600;">No records found</div>
+        <div style="font-size:0.82rem;margin-top:4px;">${status === 'all' ? 'No medical records yet.' : 'No records with this status.'}</div>
+      </div>`;
+      countEl.textContent = '0 records';
+      return;
+    }
+
+    const badgeMap = {
+      'Treated':     'badge-green',
+      'On Schedule': 'badge-yellow',
+      'On Follow-up':'badge-blue',
+    };
+
+    container.innerHTML = filtered.map(r => `
+      <div class="all-record-item">
+        <div class="all-record-left">
+          <div class="all-record-diagnosis">${r.diagnosis}</div>
+          <div class="all-record-date">📅 ${r.date}</div>
+          ${r.notes ? `<div class="all-record-notes">💬 ${r.notes}</div>` : ''}
+        </div>
+        <span class="badge ${badgeMap[r.status] || 'badge-blue'}" style="flex-shrink:0;">${r.status.toUpperCase()}</span>
+      </div>
+    `).join('');
+
+    countEl.textContent = filtered.length + ' record' + (filtered.length !== 1 ? 's' : '');
   }
 
   // ===================== WALK-IN / ADD RECORD =====================
