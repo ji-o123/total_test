@@ -1988,8 +1988,22 @@
     healthworker: { email: 'nurse@bhrs.gov', pw: 'health123', name: 'Nurse Demo' }
   };
 
-  // In-memory user store (persists until page refresh)
-  const registeredUsers = [];
+  // ===================== PERSISTENT USER STORE (localStorage) =====================
+  const STORAGE_KEY = 'chr_registered_users';
+
+  function _loadUsers() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }
+
+  function _saveUsers(users) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(users)); } catch {}
+  }
+
+  // Live array — always in sync with localStorage
+  const registeredUsers = _loadUsers();
 
   // ===================== INIT =====================
   window.onload = () => {
@@ -2323,6 +2337,7 @@
         type: 'healthworker', name, role, email, pw, isNew: true,
         bioFP: biometricState.h_fp, bioFace: biometricState.h_face
       });
+      _saveUsers(registeredUsers);
       showToast('✅ Submitted! Account pending RHU admin approval.');
     } else {
       const faceErr = document.getElementById('r-face-err');
@@ -2338,6 +2353,7 @@
         type: 'resident', name, age, sex, dob, email, pw, isNew: true,
         bioFP: biometricState.r_fp, bioFace: biometricState.r_face
       });
+      _saveUsers(registeredUsers);
       showToast('✅ Account created! You can now log in with your email, password, or biometrics.');
     }
     setTimeout(() => { goToLogin(); }, 2000);
